@@ -90,16 +90,17 @@ const Login = () => {
             </svg>
             <h1 className="text-2xl font-bold ml-2 text-textLight">Blinkoo</h1>
           </Link>
-          <h2 className="text-2xl font-bold">Welcome back</h2>
+          <h2 className="text-2xl font-bold">Bienvenue</h2>
           <p className="text-gray-400 mt-1">
-            Login to access your shortened URLs and analytics
+            Connectez-vous pour acc der vos URL raccourcies et vos
+            analytics
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="form-control">
             <label htmlFor="email" className="form-label">
-              Email address
+              Adresse e-mail
             </label>
             <input
               id="email"
@@ -107,7 +108,7 @@ const Login = () => {
               className={`form-input ${
                 formErrors.email ? "border-danger" : ""
               }`}
-              placeholder="you@example.com"
+              placeholder="vous@exemple.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -119,10 +120,10 @@ const Login = () => {
           <div className="form-control">
             <div className="flex justify-between items-center mb-1">
               <label htmlFor="password" className="form-label">
-                Password
+                Mot de passe
               </label>
               {/* <Link to="#" className="text-xs text-primary hover:underline">
-                Forgot password?
+                Mot de passe oubli ?
               </Link> */}
             </div>
             <div className="relative">
@@ -159,10 +160,10 @@ const Login = () => {
             {loading ? (
               <>
                 <span className="inline-block h-4 w-4 rounded-full border-2 border-white/20 border-t-white animate-spin mr-2" />
-                Logging in...
+                Connexion en cours...
               </>
             ) : (
-              "Login"
+              "Se connecter"
             )}
           </button>
 
