@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0d1117;
+  --card-background: #161b22;
+  --text-light: #eaeaea;
+  --primary: #58a6ff;
+  --secondary: #f778ba;
+  --danger: #ff6b6b;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: var(--background);
+  color: var(--text-light);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+}
+
+p, li, a, button, input, textarea {
+  line-height: 1.5;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.5s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Button styles */
+.btn {
+  @apply px-4 py-2 rounded-xl transition-all duration-200 font-medium;
+}
+
+.btn-primary {
+  @apply bg-[#58a6ff] text-white hover:bg-[#4a90e2] focus:ring-2 focus:ring-[#58a6ff]/50;
+}
+
+.btn-secondary {
+  @apply bg-[#f778ba] text-white hover:bg-[#e56ba7] focus:ring-2 focus:ring-[#f778ba]/50;
+}
+
+.btn-danger {
+  @apply bg-[#ff6b6b] text-white hover:bg-[#e55c5c] focus:ring-2 focus:ring-[#ff6b6b]/50;
+}
+
+.btn-outline {
+  @apply border border-[#58a6ff] text-[#58a6ff] hover:bg-[#58a6ff]/10 focus:ring-2 focus:ring-[#58a6ff]/30;
+}
+
+/* Card styles */
+.card {
+  @apply bg-[#161b22] rounded-2xl shadow-lg p-6;
+}
+
+/* Form styles */
+.form-control {
+  @apply mb-4;
+}
+
+.form-label {
+  @apply block text-sm font-medium mb-1 text-[#eaeaea];
+}
+
+.form-input {
+  @apply w-full px-3 py-2 bg-[#0d1117] border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#58a6ff] text-[#eaeaea];
+}
+
+/* Dashboard specific styles */
+.sidebar {
+  @apply fixed left-0 top-0 h-full w-64 bg-[#161b22] z-10 transform transition-transform duration-300 ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    @apply -translate-x-full;
+  }
+  
+  .sidebar.open {
+    @apply translate-x-0;
+  }
+}
+
+/* Toast notifications */
+.toast-container {
+  @apply fixed top-4 right-4 z-50 flex flex-col gap-2;
+}
+
+.toast {
+  @apply p-4 rounded-lg shadow-lg animate-slideUp min-w-[300px];
+}
+
+.toast-success {
+  @apply bg-green-500 text-white;
+}
+
+.toast-error {
+  @apply bg-[#ff6b6b] text-white;
+}
+
+.toast-info {
+  @apply bg-[#58a6ff] text-white;
+}
+
+/* Modal */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/60 flex items-center justify-center z-50 animate-fadeIn;
+}
+
+.modal-content {
+  @apply bg-[#161b22] rounded-2xl p-6 max-w-md w-full animate-slideUp;
+}
