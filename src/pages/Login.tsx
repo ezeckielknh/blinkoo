@@ -121,9 +121,9 @@ const Login = () => {
               <label htmlFor="password" className="form-label">
                 Password
               </label>
-              <Link to="#" className="text-xs text-primary hover:underline">
+              {/* <Link to="#" className="text-xs text-primary hover:underline">
                 Forgot password?
-              </Link>
+              </Link> */}
             </div>
             <div className="relative">
               <input
