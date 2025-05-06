@@ -12,10 +12,15 @@ const DashboardHome = () => {
 
   // Sécurité : fallback vide si user pas encore chargé
   const shortLinks = user?.short_links || [];
-  const qrCodes = user?.qr_codes || [];
-  const fileLinks = user?.file_links || [];
+const qrCodes = user?.qr_codes || [];
+const fileLinks = user?.file_links || [];
 
-  const totalClicks = shortLinks.reduce((sum, link) => sum + (link.click_count || 0), 0);
+const totalClicks = shortLinks.reduce((sum, link) => sum + (link.click_count || 0), 0);
+const totalScans = qrCodes.reduce((sum, qr) => sum + (qr.scan_count || 0), 0);
+const totalDownloads = fileLinks.reduce((sum, file) => sum + (file.download_count || 0), 0);
+
+const totalInteractions = totalClicks + totalScans + totalDownloads;
+
 
   const stats = [
     {
@@ -65,6 +70,67 @@ const DashboardHome = () => {
             </div>
           );
         })}
+      </div>
+
+      {/* Recent Activity */}
+      <div className="card">
+        <h2 className="text-lg font-semibold mb-4">Activité récente</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-800">
+                <th className="text-left py-3 px-4">Type</th>
+                <th className="text-left py-3 px-4">Nom</th>
+                <th className="text-center py-3 px-4">Date</th>
+                <th className="text-right py-3 px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { type: "Link", name: "https://example.com", date: "2023-08-01" },
+                { type: "QR Code", name: "QR-123456", date: "2023-08-02" },
+                { type: "File", name: "document.pdf", date: "2023-08-03" },
+              ].map((activity, index) => (
+                <tr key={index} className="border-b border-gray-800 last:border-0">
+                  <td className="py-3 px-4">{activity.type}</td>
+                  <td className="py-3 px-4">{activity.name}</td>
+                  <td className="text-center py-3 px-4">{activity.date}</td>
+                  <td className="text-right py-3 px-4">
+                    <button className="text-primary hover:underline">View</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {/* Recent Files */}
+      <div className="card">
+        <h2 className="text-lg font-semibold mb-4">Fichiers récents</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-800">
+                <th className="text-left py-3 px-4">Nom</th>
+                <th className="text-center py-3 px-4">Téléchargements</th>
+                <th className="text-center py-3 px-4">Expiration</th>
+                <th className="text-right py-3 px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fileLinks.map((file) => (
+                <tr key={file.id} className="border-b border-gray-800 last:border-0">
+                  <td className="py-3 px-4">{file.name}</td>
+                  <td className="text-center py-3 px-4">{file.downloads}</td>
+                  <td className="text-center py-3 px-4">{file.expiration}</td>
+                  <td className="text-right py-3 px-4">
+                    <button className="text-primary hover:underline">Download</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Subscription Card */}

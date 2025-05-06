@@ -9,7 +9,7 @@ DEVBASEURL: "https://gobloomevent.com/",
     REGISTER: `${BASE_URL}/register`,
   },
   SHORT_LINKS: {
-    URL: `https://gobloomevent.com/s/`,
+    URL: `https://gobloomevent.com/`,
     GET_ALL: `${BASE_URL}/my-short-links`,
     CREATE: `${BASE_URL}/short-links`,
     CREATE_AUTH: `${BASE_URL}/short-links-user`,
