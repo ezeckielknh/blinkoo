@@ -79,6 +79,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(userData);
       localStorage.setItem("blinkoo_user", JSON.stringify(userData));
       localStorage.setItem("blinkoo_token", access_token);
+      console.log("userData", userData);
       console.log("token", user);
       axios.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
     } catch (error: any) {
