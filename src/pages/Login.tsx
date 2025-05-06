@@ -194,6 +194,7 @@ const Login = () => {
                     "Authorization"
                   ] = `Bearer ${access_token}`;
                   setUser(userData); // <-- Important !
+                  console.log("userData", userData);
                   addToast("Connexion réussie avec Google !", "success");
                   navigate("/dashboard"); // <-- Maintenant ce sera exécuté après avoir mis à jour le contexte
                 } catch (err) {
