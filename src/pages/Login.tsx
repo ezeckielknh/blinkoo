@@ -197,6 +197,7 @@ const Login = () => {
                   addToast("Connexion réussie avec Google !", "success");
                   navigate("/dashboard"); // <-- Maintenant ce sera exécuté après avoir mis à jour le contexte
                 } catch (err) {
+                  console.log(err);
                   addToast("Erreur de connexion avec Google.", "error");
                 } finally {
                   setGoogleLoading(false);
