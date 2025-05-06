@@ -17,6 +17,10 @@ interface User {
 
 interface UserWithToken extends User {
   token: string;
+  // Ajoute d'autres propriétés si nécessaire
+  short_links: any[];
+  qr_codes: any[];
+  file_links: any[];
 }
 
 interface AuthContextType {
@@ -64,6 +68,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     interface LoginResponse {
       access_token: string;
       user: User;
+      short_links: any[];
+      qr_codes: any[];
+      file_links: any[];
     }
 
     try {
@@ -73,7 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
       
       const { access_token, user } = response.data;
-      const userData: UserWithToken = { ...user, token: access_token };
+      const userData: UserWithToken = { ...user, token: access_token, short_links: response.data.short_links, qr_codes: response.data.qr_codes, file_links: response.data.file_links };
       
 
       setUser(userData);
