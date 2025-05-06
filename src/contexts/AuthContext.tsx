@@ -13,6 +13,9 @@ interface User {
   email: string;
   name: string;
   plan: "free" | "premium" | "enterprise";
+  short_links: any[];
+  qr_codes: any[];
+  file_links: any[];
 }
 
 interface UserWithToken extends User {
@@ -80,7 +83,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
       
       const { access_token, user } = response.data;
-      const userData: UserWithToken = { ...user, token: access_token, short_links: response.data.short_links, qr_codes: response.data.qr_codes, file_links: response.data.file_links };
+      const userData: UserWithToken = {
+        ...user,
+        token: access_token,
+      };
+      
       
 
       setUser(userData);
