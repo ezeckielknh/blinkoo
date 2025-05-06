@@ -271,7 +271,7 @@ const QRGenerator = () => {
   const handleDownload = async (filename: string) => {
     try {
       const response = await fetch(
-        `http://192.168.1.201:8000/qr-codes/${filename}`,
+        `${API.DEVBASEURL}qr-codes/${filename}`,
         {
           mode: "cors",
         }
@@ -444,7 +444,7 @@ const QRGenerator = () => {
                 <img
                   src={
                     qr.file_path
-                      ? `http://192.168.1.201:8000/${qr.file_path}`
+                      ? `${API.DEVBASEURL}${qr.file_path}`
                       : "https://via.placeholder.com/256?text=QR+Code"
                   }
                   alt="QR Code"
@@ -469,22 +469,14 @@ const QRGenerator = () => {
                       Modifier
                     </button>
                   )}
-                  <a
-                    href={`${API} + /download/qr/${qr.file_path
-                      .split("/")
-                      .pop()}`}
-                    className="btn btn-sm btn-outline"
-                  >
-                    <Download size={14} />
-                  </a>
-
-                  <button
-                    className="btn btn-sm btn-danger"
-                    onClick={() => deleteQrCode(qr.id)}
-                    title="Supprimer"
-                  >
-                    <Trash size={14} />
-                  </button>
+                  {qr.file_path && (
+                    <a
+                      href={`${API}/download/qr/${qr.file_path.split("/").pop()}`}
+                      className="btn btn-sm btn-outline"
+                    >
+                      <Download size={14} />
+                    </a>
+                  )}
                 </div>
               </div>
             ))}

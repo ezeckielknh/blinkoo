@@ -1,14 +1,15 @@
-const BASE_URL = "http://192.168.1.201:8000/api";
+const BASE_URL = "https://gobloomevent.com/api";
 
 export const API = {
-DEVBASEURL: "http://192.168.1.201:8000/",
+  BASE_URL: "https://gobloomevent.com/api",
+DEVBASEURL: "https://gobloomevent.com/",
   AUTH: {
     LOGIN: `${BASE_URL}/login`,
     GOOGLE_LOGIN: `${BASE_URL}/login/google`,
     REGISTER: `${BASE_URL}/register`,
   },
   SHORT_LINKS: {
-    URL: `http://192.168.1.201:8000/s/`,
+    URL: `https://gobloomevent.com/s/`,
     GET_ALL: `${BASE_URL}/my-short-links`,
     CREATE: `${BASE_URL}/short-links`,
     CREATE_AUTH: `${BASE_URL}/short-links-user`,

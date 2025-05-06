@@ -2,6 +2,7 @@ import { CreditCard, Check, Star } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { useState } from 'react';
+import { API } from '../../utils/api';
 
 const Subscription = () => {
   const { user } = useAuth(); // Assure-toi que `refreshUser()` existe dans ton AuthContext
@@ -27,7 +28,7 @@ const Subscription = () => {
 
     setLoading(true);
     try {
-      const res = await fetch("http://192.168.1.201:8000/api/transactions/init", {
+      const res = await fetch(`${API.BASE_URL}/transactions/init`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +58,7 @@ const Subscription = () => {
       let attempt = 0;
       const interval = setInterval(async () => {
         attempt++;
-        const verifyRes = await fetch(`http://192.168.1.201:8000/api/transactions/verify`, {
+        const verifyRes = await fetch(`h${API.BASE_URL}/transactions/verify`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

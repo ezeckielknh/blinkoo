@@ -192,7 +192,7 @@ const FileManager = () => {
                         title="Télécharger"
                         onClick={() => {
                           const a = document.createElement("a");
-                          a.href = `http://192.168.1.201:8000/f/${file.id}`;
+                          a.href = `${API.DEVBASEURL}f/${file.id}`;
                           a.download = file.original_name;
                           a.click();
                         }}
