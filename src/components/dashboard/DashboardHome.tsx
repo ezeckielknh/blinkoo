@@ -10,6 +10,7 @@ const DashboardHome = () => {
     { name: 'Files Shared', value: '15', icon: FileBox, change: '+8%' },
     { name: 'Total Clicks', value: '1.2k', icon: BarChart2, change: '+18%' },
   ];
+  console.log(user);
 
   return (
     <div className="space-y-6">
