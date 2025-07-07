@@ -4,44 +4,60 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Dark theme colors (default)
-        background: '#0d1117',
-        card: '#161b22',
-        textLight: '#eaeaea',
-        primary: '#58a6ff',
-        secondary: '#f778ba',
-        danger: '#ff6b6b',
-        
-        // Define color schemes for both dark and light themes
-        darkTheme: {
+        dark: {
           background: '#0d1117',
-          card: '#161b22',
-          textLight: '#eaeaea',
-          primary: '#58a6ff',
-          secondary: '#f778ba',
-          danger: '#ff6b6b',
+          card: '#1f2937',
+          text: {
+            primary: '#e5e7eb',
+            secondary: '#9ca3af',
+          },
+          primary: '#eab308',
+          secondary: '#7c3aed',
+          tertiary: '#a855f7',
+          accent: '#eab308',
+          danger: '#ef4444'
         },
-        lightTheme: {
-          background: '#ffffff', // couleur de fond pour le mode clair
-          card: '#f7f7f7', // couleur de carte pour le mode clair
-          textLight: '#333333', // couleur de texte pour le mode clair
-          primary: '#007bff', // couleur principale pour le mode clair
-          secondary: '#6c757d', // couleur secondaire pour le mode clair
-          danger: '#dc3545', // couleur de danger pour le mode clair
+        light: {
+          background: '#ffffff',
+          card: '#f3f4f6',
+          text: {
+            primary: '#1f2937',
+            secondary: '#4b5563',
+          },
+          primary: '#eab308',
+          secondary: '#7c3aed',
+          tertiary: '#a855f7',
+          accent: '#eab308',
+          danger: '#dc2626'
         },
       },
       fontFamily: {
         sans: ['Inter', 'Segoe UI', 'sans-serif'],
       },
       borderRadius: {
-        'lg': '10px',
-        'xl': '15px',
+        lg: '10px',
+        xl: '15px',
         '2xl': '20px',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.5s ease-out',
-        'pulse': 'pulse 2s infinite',
+        pulse: 'pulse 2s infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
+        slideUp: {
+          from: { transform: 'translateY(20px)', opacity: 0 },
+          to: { transform: 'translateY(0)', opacity: 1 },
+        },
+        pulse: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.05)' },
+          '100%': { transform: 'scale(1)' },
+        },
       },
     },
   },
