@@ -9,6 +9,7 @@ import {
   Lock,
   BarChart3,
   Loader2,
+  Mail,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
@@ -25,6 +26,12 @@ interface FileData {
   custom_alias?: string;
   download_count: number;
   expires_at?: string;
+  size: number; // Taille du fichier en octets
+}
+
+interface UploadProgress {
+  fileName: string;
+  progress: number;
 }
 
 const FileManager = () => {
@@ -34,10 +41,12 @@ const FileManager = () => {
   const [uploading, setUploading] = useState(false);
   const [files, setFiles] = useState<FileData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [pendingFiles, setPendingFiles] = useState<File[]>([]); // Changed to array for multiple files
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [tempPassword, setTempPassword] = useState("");
   const [customAlias, setCustomAlias] = useState("");
+  const [emailRecipients, setEmailRecipients] = useState<string>("");
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([]);
 
   useEffect(() => {
     fetchFiles();
@@ -76,19 +85,14 @@ const FileManager = () => {
         );
         return;
       }
-      if (user.plan === "free") {
-        confirmUpload(undefined, [acceptedFiles[0]]); // Only one file for free
-      } else {
-        setPendingFiles(acceptedFiles);
-        setShowPasswordModal(true);
-      }
+      setPendingFiles(acceptedFiles);
+      setShowPasswordModal(true);
     },
     [user]
   );
 
-  const confirmUpload = async (password?: string, filesToUpload?: File[]) => {
-    const files = filesToUpload || pendingFiles;
-    if (!files.length || !user) return;
+  const confirmUpload = async () => {
+    if (!pendingFiles.length || !user) return;
 
     setUploading(true);
     setShowPasswordModal(false);
@@ -97,7 +101,7 @@ const FileManager = () => {
     const storageUsed = files.reduce((total, file) => {
       return total + file.size;
     }, 0);
-    const totalFileSize = files.reduce((total, file) => total + file.size, 0);
+    const totalFileSize = pendingFiles.reduce((total, file) => total + file.size, 0);
     const storageLimit = getStorageLimit(user.plan);
 
     if (storageLimit && storageUsed + totalFileSize > storageLimit) {
@@ -107,9 +111,9 @@ const FileManager = () => {
     }
 
     let zipFile: File;
-    if (files.length > 1) {
+    if (pendingFiles.length > 1) {
       const zip = new JSZip();
-      files.forEach((file) => {
+      pendingFiles.forEach((file) => {
         zip.file(file.name, file);
       });
       const zipBlob = await zip.generateAsync({ type: "blob" });
@@ -117,40 +121,68 @@ const FileManager = () => {
         type: "application/zip",
       });
     } else {
-      zipFile = files[0];
+      zipFile = pendingFiles[0];
     }
 
     const formData = new FormData();
     formData.append("file", zipFile);
-    if (password && user.plan !== "free") formData.append("file_password", password); // Mot de passe uniquement pour payants
+    if (tempPassword && user.plan !== "free") formData.append("file_password", tempPassword);
     if (user.plan === "enterprise" && customAlias) formData.append("custom_alias", customAlias);
+    if (emailRecipients) formData.append("email_recipients", emailRecipients);
 
     try {
-      const res = await fetch(API.FILES.UPLOAD, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${user.token}` },
-        body: formData,
+      // Use XMLHttpRequest for upload progress
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", API.FILES.UPLOAD, true);
+        xhr.setRequestHeader("Authorization", `Bearer ${user.token}`);
+
+        xhr.upload.onprogress = (progressEvent: ProgressEvent) => {
+          if (progressEvent.lengthComputable) {
+            const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+            setUploadProgress([{ fileName: zipFile.name, progress }]);
+          }
+        };
+
+        xhr.onload = () => {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (xhr.status >= 200 && xhr.status < 300) {
+              addToast("Fichier(s) téléversé(s) avec succès", "success");
+              fetchFiles();
+              resolve();
+            } else {
+              addToast(data?.error || "Erreur lors de l'upload", "error");
+              reject(new Error(data?.error || "Erreur lors de l'upload"));
+            }
+          } catch (e) {
+            addToast("Erreur lors de l'upload", "error");
+            reject(e);
+          }
+        };
+
+        xhr.onerror = () => {
+          addToast("Erreur réseau", "error");
+          reject(new Error("Erreur réseau"));
+        };
+
+        xhr.send(formData);
       });
-      const data = await res.json();
-      if (!res.ok) {
-        addToast(data?.error || "Erreur lors de l'upload", "error");
-      } else {
-        addToast("Fichier(s) téléversé(s) avec succès", "success");
-        fetchFiles();
-      }
     } catch (err) {
-      addToast("Erreur réseau", "error");
+      // Error already handled in xhr.onerror/xhr.onload
     } finally {
       setTempPassword("");
       setCustomAlias("");
+      setEmailRecipients("");
       setPendingFiles([]);
+      setUploadProgress([]);
       setUploading(false);
     }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    multiple: true, // Always true, handled by plan logic
+    multiple: true,
   });
 
   const deleteFile = async (fileId: string) => {
@@ -307,7 +339,7 @@ const FileManager = () => {
           >
             Taille max par fichier :{" "}
             {user?.plan === "free" ? "100MB" : "1GB"}
-            {user?.plan !== "free" && " (plusieurs fichiers possibles)"}
+            (plusieurs fichiers possibles, seront zippés)
             <br />
             Stockage total :{" "}
             {getStorageLimit(user?.plan || "free") === null
@@ -317,6 +349,31 @@ const FileManager = () => {
                 )}MB`}
           </p>
         </div>
+        {uploading && uploadProgress.length > 0 && (
+          <div className="mt-4 space-y-2">
+            {uploadProgress.map((prog) => (
+              <div key={prog.fileName} className="flex flex-col">
+                <span
+                  className={`text-sm ${
+                    theme === "dark"
+                      ? "text-dark-text-secondary"
+                      : "text-light-text-secondary"
+                  }`}
+                >
+                  {prog.fileName} ({prog.progress}%)
+                </span>
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    className={`h-2.5 rounded-full ${
+                      theme === "dark" ? "bg-dark-primary" : "bg-light-primary"
+                    }`}
+                    style={{ width: `${prog.progress}%` }}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div
@@ -557,9 +614,10 @@ const FileManager = () => {
           setShowPasswordModal(false);
           setTempPassword("");
           setCustomAlias("");
+          setEmailRecipients("");
           setPendingFiles([]);
         }}
-        title="Protection du Fichier"
+        title="Protection et Partage du Fichier"
       >
         <p
           className={`text-sm mb-4 ${
@@ -569,10 +627,33 @@ const FileManager = () => {
           }`}
         >
           Protégez votre fichier avec un mot de passe (disponible uniquement pour
-          les plans Premium et Enterprise) ou ajoutez un alias personnalisé
-          (optionnel pour Enterprise). {pendingFiles.length > 1 && "Les fichiers sélectionnés seront zippés ensemble."}
+          les plans Premium et Enterprise), ajoutez un alias personnalisé
+          (Enterprise uniquement), ou partagez le lien par email.{" "}
+          {pendingFiles.length > 1 && "Les fichiers sélectionnés seront zippés ensemble."}
         </p>
         <div className="space-y-4">
+          <div>
+            <label
+              className={`block text-sm font-medium mb-1 ${
+                theme === "dark"
+                  ? "text-dark-text-secondary"
+                  : "text-light-text-secondary"
+              }`}
+            >
+              Emails des destinataires (séparés par des virgules)
+            </label>
+            <input
+              type="text"
+              placeholder="ex: email1@example.com, email2@example.com"
+              className={`w-full px-4 py-2 rounded-lg border font-sans text-sm ${
+                theme === "dark"
+                  ? "bg-dark-background/50 text-dark-text-primary placeholder-dark-text-secondary border-dark-primary/50"
+                  : "bg-light-background/50 text-light-text-primary placeholder-light-text-secondary border-light-primary/50"
+              } focus:outline-none focus:ring-2 focus:ring-dark-primary transition-all`}
+              value={emailRecipients}
+              onChange={(e) => setEmailRecipients(e.target.value)}
+            />
+          </div>
           <div>
             <label
               className={`block text-sm font-medium mb-1 ${
@@ -633,13 +714,13 @@ const FileManager = () => {
             Sans protection
           </button>
           <button
-            onClick={() => confirmUpload(tempPassword)}
-            disabled={uploading || user?.plan === "free"}
+            onClick={() => confirmUpload()}
+            disabled={uploading}
             className={`px-4 py-2 rounded-lg font-sans text-sm transition-all ${
               theme === "dark"
                 ? "bg-dark-primary text-dark-text-primary hover:bg-dark-secondary/80"
                 : "bg-light-primary text-light-text-primary hover:bg-light-secondary-dark"
-            } ${uploading || user?.plan === "free" ? "opacity-50 cursor-not-allowed" : ""}`}
+            } ${uploading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {uploading ? (
               <Loader2 size={16} className="animate-spin inline-block mr-2" />
