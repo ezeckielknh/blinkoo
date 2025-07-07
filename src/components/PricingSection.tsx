@@ -22,8 +22,12 @@ const PricingSection = () => {
     },
     {
       name: "Premium",
-      price: "100 XOF",
+      price: "5 500 XOF",
       period: "/ mois",
+      promotion: {
+        promoPrice: "3 500 XOF",
+        endDate: "9 octobre 2025",
+      },
       features: [
         "Liens illimités",
         "Analytique avancée",
@@ -38,7 +42,7 @@ const PricingSection = () => {
     {
       name: "Premium Trimestriel",
       price: "255 XOF",
-      originalPrice: "300 XOF", // 100 XOF/mois * 3 = 300 XOF, réduit à 255 XOF (15% de réduction)
+      originalPrice: "300 XOF",
       discount: "15%",
       period: "/ 3 mois",
       features: [
@@ -56,7 +60,7 @@ const PricingSection = () => {
     {
       name: "Premium Annuel",
       price: "480 XOF",
-      originalPrice: "1200 XOF", // 100 XOF/mois * 12 = 1200 XOF, réduit à 480 XOF (60% de réduction)
+      originalPrice: "1200 XOF",
       discount: "60%",
       period: "/ an",
       features: [
@@ -162,7 +166,8 @@ const PricingSection = () => {
         >
           Choisissez le plan qui correspond à vos besoins. Tous les plans
           incluent les fonctionnalités de base avec des limites et capacités
-          différentes.
+          différentes. Profitez de notre offre spéciale sur le plan Premium à
+          3 500 XOF/mois jusqu'au 9 octobre 2025 !
         </motion.p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {plans.map((plan, index) => (
@@ -206,17 +211,6 @@ const PricingSection = () => {
                   {plan.name}
                 </h3>
                 <div className="flex items-center justify-center flex-wrap gap-2">
-                  {plan.originalPrice && (
-                    <span
-                      className={`text-lg line-through ${
-                        theme === "dark"
-                          ? "text-dark-text-secondary/70"
-                          : "text-light-text-secondary/70"
-                      } font-sans`}
-                    >
-                      {plan.originalPrice}
-                    </span>
-                  )}
                   <span
                     className={`text-3xl md:text-4xl font-bold ${
                       theme === "dark"
@@ -249,6 +243,17 @@ const PricingSection = () => {
                     </span>
                   )}
                 </div>
+                {plan.promotion && (
+                  <span
+                    className={`text-sm font-semibold mt-2 block ${
+                      theme === "dark"
+                        ? "text-dark-primary"
+                        : "text-light-primary"
+                      } font-sans`}
+                  >
+                    PROMO {plan.promotion.promoPrice} jusqu'au {plan.promotion.endDate}
+                  </span>
+                )}
               </div>
               <ul className="space-y-3 mb-6">
                 {plan.features.map((feature, featureIndex) => (
