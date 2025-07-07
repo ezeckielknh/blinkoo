@@ -35,7 +35,7 @@ const PricingPage = () => {
     },
     {
       name: "Bliic Premium Mensuel",
-      price: "5 500 FCFA",
+      price: "3 500 FCFA",
       period: "/ mois",
       icon: Calendar,
       features: [
