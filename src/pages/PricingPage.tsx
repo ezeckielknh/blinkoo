@@ -35,7 +35,7 @@ const PricingPage = () => {
     },
     {
       name: "Bliic Premium Mensuel",
-      price: "3 500 FCFA",
+      price: "5 500 FCFA",
       period: "/ mois",
       icon: Calendar,
       features: [
@@ -50,7 +50,7 @@ const PricingPage = () => {
       ctaLink: "/subscription",
       popular: false,
       promotion: {
-        originalPrice: "5 500 FCFA",
+        promoPrice: "3 500 FCFA",
         endDate: "9 octobre 2025",
       },
     },
@@ -95,7 +95,7 @@ const PricingPage = () => {
       question:
         "Quels sont les avantages des plans Premium par rapport au plan Découverte ?",
       answer:
-        "Les plans Premium offrent des liens illimités, des QR codes personnalisés, une analytique avancée, la personnalisation de domaine, et un espace de stockage étendu (jusqu'à 100 Mo). Le plan Découverte est limité à 10 liens/mois, des QR codes standards, 5 Mo de stockage et affiche la marque Bliic. Actuellement, le plan Premium Mensuel est en promotion à 3 500 FCFA/mois (au lieu de 5 500 FCFA) jusqu'au 9 octobre 2025.",
+        "Les plans Premium offrent des liens illimités, des QR codes personnalisés, une analytique avancée, la personnalisation de domaine, et un espace de stockage étendu (jusqu'à 1 GB). Le plan Découverte est limité à 10 liens/mois, des QR codes standards, 100 MB de stockage et affiche la marque Bliic. Actuellement, le plan Premium Mensuel est en promotion à 3 500 FCFA/mois (au lieu de 5 500 FCFA) jusqu'au 9 octobre 2025.",
     },
     {
       question: "Puis-je changer ou annuler mon plan à tout moment ?",
@@ -178,7 +178,7 @@ const PricingPage = () => {
             .pricing-card:hover::before {
               opacity: 1;
             }
-            .popular-badge::before, .promo-badge::before {
+            .popular-badge::before {
               content: '';
               position: absolute;
               top: -1px;
@@ -244,7 +244,8 @@ const PricingPage = () => {
           >
             Que vous débutiez ou que vous gériez un volume important, Bliic vous
             propose des plans clairs, adaptés à chaque profil. Profitez de notre
-            offre spéciale sur le plan Premium Mensuel jusqu'au 9 octobre 2025 !
+            offre spéciale sur le plan Premium Mensuel à 3 500 FCFA/mois jusqu'au
+            9 octobre 2025 !
           </motion.p>
         </div>
       </section>
@@ -281,22 +282,6 @@ const PricingPage = () => {
                     transition={{ duration: 0.3, delay: index * 0.1 + 0.4 }}
                   >
                     Populaire
-                  </motion.div>
-                )}
-                {plan.promotion && (
-                  <motion.div
-                    className={`promo-badge absolute ${
-                      plan.popular ? "-top-10" : "-top-3"
-                    } left-1/2 transform -translate-x-1/2 px-4 py-1 text-sm font-semibold rounded-full ${
-                      theme === "dark"
-                        ? "bg-dark-primary text-dark-text-primary"
-                        : "bg-light-primary text-dark-text-primary"
-                    }`}
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 + 0.4 }}
-                  >
-                    Promo jusqu'au {plan.promotion.endDate}
                   </motion.div>
                 )}
                 <div className="text-center mb-6">
@@ -358,18 +343,18 @@ const PricingPage = () => {
                     >
                       {plan.period}
                     </span>
-                    {plan.promotion && (
-                      <span
-                        className={`text-sm line-through ${
-                          theme === "dark"
-                            ? "text-dark-text-secondary"
-                            : "text-light-text-secondary"
-                        } font-sans`}
-                      >
-                        {plan.promotion.originalPrice}
-                      </span>
-                    )}
                   </div>
+                  {plan.promotion && (
+                    <span
+                      className={`text-sm font-semibold mt-2 block ${
+                        theme === "dark"
+                          ? "text-dark-primary"
+                          : "text-light-primary"
+                      } font-sans`}
+                    >
+                      PROMO {plan.promotion.promoPrice} jusqu'au {plan.promotion.endDate}
+                    </span>
+                  )}
                 </div>
                 <ul className="space-y-3 mb-6">
                   {plan.features.map((feature, featureIndex) => (
@@ -526,8 +511,8 @@ const PricingPage = () => {
           >
             Testez gratuitement, puis débloquez le plein potentiel de vos liens,
             QR codes et partages avec un plan adapté à votre usage. Ne manquez
-            pas notre offre spéciale sur le plan Premium Mensuel jusqu'au 9
-            octobre 2025 !
+            pas notre offre spéciale sur le plan Premium Mensuel à 3 500 FCFA/mois
+            jusqu'au 9 octobre 2025 !
           </motion.p>
           <Link
             to="/register"
