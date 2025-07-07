@@ -1,77 +1,86 @@
 import { useTheme } from "../contexts/ThemeContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import {
+  Gift,
+  Calendar,
+  Clock,
+  Award,
+  Check,
+} from "lucide-react";
 
 const PricingSection = () => {
   const { theme } = useTheme();
 
   const plans = [
     {
-      name: "Free",
-      price: "0 XOF",
-      period: "/ forever",
+      name: "Bliic Découverte",
+      price: "0 FCFA",
+      period: "/ pour toujours",
+      icon: Gift,
       features: [
         "10 liens/mois",
         "Analytique de base",
         "QR codes standards",
-        "Partage de fichiers jusqu'à 5MB",
+        "Partage de fichiers jusqu'à 100 MB",
+        "Bliic visible",
       ],
       cta: "Commencer",
       ctaLink: "/register",
       popular: false,
     },
     {
-      name: "Premium",
-      price: "5 500 XOF",
+      name: "Bliic Premium Mensuel",
+      price: "5 500 FCFA",
       period: "/ mois",
-      promotion: {
-        promoPrice: "3 500 XOF",
-        endDate: "9 octobre 2025",
-      },
+      icon: Calendar,
       features: [
         "Liens illimités",
         "Analytique avancée",
         "QR codes personnalisés",
-        "Partage de fichiers jusqu'à 100MB",
-        "Domaines personnalisés",
+        "Partage de fichiers jusqu'à 1 GB",
+        "Domaine personnalisé",
+        "Suppression branding",
       ],
-      cta: "Passer au Plan",
+      cta: "Choisir ce plan",
       ctaLink: "/subscription",
       popular: false,
+      promotion: {
+        promoPrice: "3 500 FCFA",
+        endDate: "9 octobre 2025",
+      },
     },
     {
-      name: "Premium Trimestriel",
-      price: "255 XOF",
-      originalPrice: "300 XOF",
-      discount: "15%",
+      name: "Bliic Premium Trimestriel",
+      price: "14 900 FCFA",
       period: "/ 3 mois",
+      icon: Clock,
       features: [
         "Liens illimités",
         "Analytique avancée",
         "QR codes personnalisés",
-        "Partage de fichiers jusqu'à 100MB",
-        "Domaines personnalisés",
-        "15% de réduction par mois",
+        "Partage de fichiers jusqu'à 1 GB",
+        "Domaine personnalisé",
+        "Support + MàJ anticipée",
       ],
-      cta: "Passer au Plan",
+      cta: "Choisir ce plan",
       ctaLink: "/subscription",
       popular: true,
     },
     {
-      name: "Premium Annuel",
-      price: "480 XOF",
-      originalPrice: "1200 XOF",
-      discount: "60%",
+      name: "Bliic Premium Annuel",
+      price: "39 000 FCFA",
       period: "/ an",
+      icon: Award,
       features: [
         "Liens illimités",
         "Analytique avancée",
         "QR codes personnalisés",
-        "Partage de fichiers jusqu'à 100MB",
-        "Domaines personnalisés",
-        "60% de réduction par mois",
+        "Partage de fichiers jusqu'à 1 GB",
+        "2 domaines personnalisés",
+        "Accès bêta + badge",
       ],
-      cta: "Passer au Plan",
+      cta: "Choisir ce plan",
       ctaLink: "/subscription",
       popular: false,
     },
@@ -164,10 +173,10 @@ const PricingSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Choisissez le plan qui correspond à vos besoins. Tous les plans
-          incluent les fonctionnalités de base avec des limites et capacités
-          différentes. Profitez de notre offre spéciale sur le plan Premium à
-          3 500 XOF/mois jusqu'au 9 octobre 2025 !
+          Que vous débutiez ou que vous gériez un volume important, Bliic vous
+          propose des plans clairs, adaptés à chaque profil. Profitez de notre
+          offre spéciale sur le plan Premium Mensuel à 3 500 FCFA/mois jusqu'au
+          9 octobre 2025 !
         </motion.p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {plans.map((plan, index) => (
@@ -201,6 +210,36 @@ const PricingSection = () => {
                 </motion.div>
               )}
               <div className="text-center mb-6">
+                <div
+                  className="relative mx-auto mb-4"
+                  style={{ width: "68px", aspectRatio: "1/1" }}
+                >
+                  <plan.icon
+                    size={32}
+                    className={`absolute inset-0 m-auto ${
+                      theme === "dark"
+                        ? "text-dark-primary"
+                        : "text-light-primary"
+                    }`}
+                  />
+                  <svg
+                    className={`absolute top-0 left-0 ${
+                      theme === "dark"
+                        ? "text-dark-primary"
+                        : "text-light-primary"
+                    }`}
+                    width="68"
+                    height="68"
+                    viewBox="0 0 68 68"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M56.0059 60.5579C44.1549 78.9787 18.0053 58.9081 6.41191 46.5701C-2.92817 35.5074 -2.81987 12.1818 11.7792 3.74605C30.0281 -6.79858 48.0623 7.40439 59.8703 15.7971C71.6784 24.1897 70.8197 37.5319 56.0059 60.5579Z"
+                      fillOpacity="0.1"
+                    />
+                  </svg>
+                </div>
                 <h3
                   className={`text-2xl font-bold mb-2 ${
                     theme === "dark"
@@ -216,7 +255,7 @@ const PricingSection = () => {
                       theme === "dark"
                         ? "text-dark-text-primary"
                         : "text-light-text-primary"
-                      } font-sans`}
+                    } font-sans`}
                   >
                     {plan.price}
                   </span>
@@ -225,23 +264,10 @@ const PricingSection = () => {
                       theme === "dark"
                         ? "text-dark-text-secondary"
                         : "text-light-text-secondary"
-                      } font-sans`}
+                    } font-sans`}
                   >
                     {plan.period}
                   </span>
-                  {plan.discount && (
-                    <span
-                      className={`text-sm font-semibold ${
-                        theme === "dark"
-                          ? "text-dark-primary"
-                          : "text-light-primary"
-                      } bg-${
-                        theme === "dark" ? "dark-primary/10" : "light-primary/10"
-                      } px-2 py-1 rounded-full`}
-                    >
-                      -{plan.discount}
-                    </span>
-                  )}
                 </div>
                 {plan.promotion && (
                   <span
@@ -249,7 +275,7 @@ const PricingSection = () => {
                       theme === "dark"
                         ? "text-dark-primary"
                         : "text-light-primary"
-                      } font-sans`}
+                    } font-sans`}
                   >
                     PROMO {plan.promotion.promoPrice} jusqu'au {plan.promotion.endDate}
                   </span>
@@ -258,21 +284,14 @@ const PricingSection = () => {
               <ul className="space-y-3 mb-6">
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start">
-                    <svg
-                      className={`w-5 h-5 mt-0.5 mr-2 ${
+                    <Check
+                      size={20}
+                      className={`mt-0.5 mr-2 ${
                         theme === "dark"
                           ? "text-dark-primary"
                           : "text-light-primary"
                       }`}
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    />
                     <span
                       className={`text-base ${
                         theme === "dark"
