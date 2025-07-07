@@ -18,8 +18,8 @@ const PricingPage = () => {
 
   const plans = [
     {
-      name: "Bliic Starter",
-      price: "0 XOF",
+      name: "Bliic Découverte",
+      price: "0 FCFA",
       period: "/ pour toujours",
       icon: Gift,
       features: [
@@ -27,14 +27,15 @@ const PricingPage = () => {
         "Analytique de base",
         "QR codes standards",
         "Partage de fichiers jusqu'à 5MB",
+        "Bliic visible",
       ],
       cta: "Commencer",
       ctaLink: "/register",
       popular: false,
     },
     {
-      name: "Bliic Pro Mensuel",
-      price: "100 XOF",
+      name: "Bliic Premium Mensuel",
+      price: "5 500 FCFA",
       period: "/ mois",
       icon: Calendar,
       features: [
@@ -42,15 +43,16 @@ const PricingPage = () => {
         "Analytique avancée",
         "QR codes personnalisés",
         "Partage de fichiers jusqu'à 100MB",
-        "Domaines personnalisés",
+        "Domaine personnalisé",
+        "Suppression branding",
       ],
       cta: "Choisir ce plan",
       ctaLink: "/subscription",
       popular: false,
     },
     {
-      name: "Bliic Pro Trimestre",
-      price: "255 XOF",
+      name: "Bliic Premium Trimestriel",
+      price: "14 900 FCFA",
       period: "/ 3 mois",
       icon: Clock,
       features: [
@@ -58,16 +60,16 @@ const PricingPage = () => {
         "Analytique avancée",
         "QR codes personnalisés",
         "Partage de fichiers jusqu'à 100MB",
-        "Domaines personnalisés",
-        "15% de réduction par mois",
+        "Domaine personnalisé",
+        "Support + MàJ anticipée",
       ],
       cta: "Choisir ce plan",
       ctaLink: "/subscription",
       popular: true,
     },
     {
-      name: "Bliic Pro Annuel",
-      price: "480 XOF",
+      name: "Bliic Premium Annuel",
+      price: "39 000 FCFA",
       period: "/ an",
       icon: Award,
       features: [
@@ -75,8 +77,8 @@ const PricingPage = () => {
         "Analytique avancée",
         "QR codes personnalisés",
         "Partage de fichiers jusqu'à 100MB",
-        "Domaines personnalisés",
-        "60% de réduction par mois",
+        "2 domaines personnalisés",
+        "Accès bêta + badge",
       ],
       cta: "Choisir ce plan",
       ctaLink: "/subscription",
@@ -87,9 +89,9 @@ const PricingPage = () => {
   const faqs = [
     {
       question:
-        "Quels sont les avantages des plans Premium par rapport au plan gratuit ?",
+        "Quels sont les avantages des plans Premium par rapport au plan Découverte ?",
       answer:
-        "Les plans Premium offrent des liens illimités, des QR codes personnalisés, une analytique avancée, la personnalisation de domaine, et un espace de stockage étendu (jusqu'à 100 Mo). Le plan gratuit est limité à 10 liens/mois, des QR codes standards et 5 Mo de stockage.",
+        "Les plans Premium offrent des liens illimités, des QR codes personnalisés, une analytique avancée, la personnalisation de domaine, et un espace de stockage étendu (jusqu'à 100 Mo). Le plan Découverte est limité à 10 liens/mois, des QR codes standards, 5 Mo de stockage et affiche la marque Bliic.",
     },
     {
       question: "Puis-je changer ou annuler mon plan à tout moment ?",
@@ -99,7 +101,7 @@ const PricingPage = () => {
     {
       question: "Que se passe-t-il à la fin de mon abonnement ?",
       answer:
-        "Si vous ne renouvelez pas, vous revenez automatiquement au plan gratuit. Vos liens et fichiers restent valides, mais certaines fonctionnalités avancées seront désactivées.",
+        "Si vous ne renouvelez pas, vous revenez automatiquement au plan Découverte. Vos liens et fichiers restent valides, mais certaines fonctionnalités avancées seront désactivées.",
     },
     {
       question: "Proposez-vous une garantie ou un remboursement ?",
