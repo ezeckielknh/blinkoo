@@ -296,7 +296,7 @@ const PricingPage = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: index * 0.1 + 0.4 }}
                   >
-                    Offre spéciale jusqu'au {plan.promotion.endDate}
+                    Promo jusqu'au {plan.promotion.endDate}
                   </motion.div>
                 )}
                 <div className="text-center mb-6">
