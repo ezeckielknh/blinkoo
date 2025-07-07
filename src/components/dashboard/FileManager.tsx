@@ -46,6 +46,7 @@ const FileManager = () => {
   const [tempPassword, setTempPassword] = useState("");
   const [customAlias, setCustomAlias] = useState("");
   const [emailRecipients, setEmailRecipients] = useState<string>("");
+  const [senderEmail, setSenderEmail] = useState<string>("");
   const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([]);
 
   useEffect(() => {
@@ -127,8 +128,9 @@ const FileManager = () => {
     const formData = new FormData();
     formData.append("file", zipFile);
     if (tempPassword && user.plan !== "free") formData.append("file_password", tempPassword);
-    if (user.plan === "enterprise" && customAlias) formData.append("custom_alias", customAlias);
+    if (customAlias) formData.append("custom_alias", customAlias);
     if (emailRecipients) formData.append("email_recipients", emailRecipients);
+    if (senderEmail) formData.append("sender_email", senderEmail);
 
     try {
       // Use XMLHttpRequest for upload progress
@@ -174,6 +176,7 @@ const FileManager = () => {
       setTempPassword("");
       setCustomAlias("");
       setEmailRecipients("");
+      setSenderEmail("");
       setPendingFiles([]);
       setUploadProgress([]);
       setUploading(false);
@@ -615,6 +618,7 @@ const FileManager = () => {
           setTempPassword("");
           setCustomAlias("");
           setEmailRecipients("");
+          setSenderEmail("");
           setPendingFiles([]);
         }}
         title="Protection et Partage du Fichier"
@@ -627,8 +631,8 @@ const FileManager = () => {
           }`}
         >
           Protégez votre fichier avec un mot de passe (disponible uniquement pour
-          les plans Premium et Enterprise), ajoutez un alias personnalisé
-          (Enterprise uniquement), ou partagez le lien par email.{" "}
+          les plans Premium et Enterprise), ajoutez un alias personnalisé, ou
+          partagez le lien par email.{" "}
           {pendingFiles.length > 1 && "Les fichiers sélectionnés seront zippés ensemble."}
         </p>
         <div className="space-y-4">
@@ -640,7 +644,29 @@ const FileManager = () => {
                   : "text-light-text-secondary"
               }`}
             >
-              Emails des destinataires (séparés par des virgules)
+              Votre email (expéditeur, facultatif)
+            </label>
+            <input
+              type="email"
+              placeholder="ex: votre.email@example.com"
+              className={`w-full px-4 py-2 rounded-lg border font-sans text-sm ${
+                theme === "dark"
+                  ? "bg-dark-background/50 text-dark-text-primary placeholder-dark-text-secondary border-dark-primary/50"
+                  : "bg-light-background/50 text-light-text-primary placeholder-light-text-secondary border-light-primary/50"
+              } focus:outline-none focus:ring-2 focus:ring-dark-primary transition-all`}
+              value={senderEmail}
+              onChange={(e) => setSenderEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <label
+              className={`block text-sm font-medium mb-1 ${
+                theme === "dark"
+                  ? "text-dark-text-secondary"
+                  : "text-light-text-secondary"
+              }`}
+            >
+              Emails des destinataires (séparés par des virgules, facultatif)
             </label>
             <input
               type="text"
@@ -677,30 +703,28 @@ const FileManager = () => {
               disabled={user?.plan === "free"}
             />
           </div>
-          {user?.plan === "enterprise" && (
-            <div>
-              <label
-                className={`block text-sm font-medium mb-1 ${
-                  theme === "dark"
-                    ? "text-dark-text-secondary"
-                    : "text-light-text-secondary"
-                }`}
-              >
-                Alias personnalisé (facultatif)
-              </label>
-              <input
-                type="text"
-                placeholder="ex: mon-document"
-                className={`w-full px-4 py-2 rounded-lg border font-sans text-sm ${
-                  theme === "dark"
-                    ? "bg-dark-background/50 text-dark-text-primary placeholder-dark-text-secondary border-dark-primary/50"
-                    : "bg-light-background/50 text-light-text-primary placeholder-light-text-secondary border-light-primary/50"
-                } focus:outline-none focus:ring-2 focus:ring-dark-primary transition-all`}
-                value={customAlias}
-                onChange={(e) => setCustomAlias(e.target.value)}
-              />
-            </div>
-          )}
+          <div>
+            <label
+              className={`block text-sm font-medium mb-1 ${
+                theme === "dark"
+                  ? "text-dark-text-secondary"
+                  : "text-light-text-secondary"
+              }`}
+            >
+              Alias personnalisé (facultatif)
+            </label>
+            <input
+              type="text"
+              placeholder="ex: mon-document"
+              className={`w-full px-4 py-2 rounded-lg border font-sans text-sm ${
+                theme === "dark"
+                  ? "bg-dark-background/50 text-dark-text-primary placeholder-dark-text-secondary border-dark-primary/50"
+                  : "bg-light-background/50 text-light-text-primary placeholder-light-text-secondary border-light-primary/50"
+              } focus:outline-none focus:ring-2 focus:ring-dark-primary transition-all`}
+              value={customAlias}
+              onChange={(e) => setCustomAlias(e.target.value)}
+            />
+          </div>
         </div>
         <div className="flex justify-end gap-2 mt-6">
           <button
