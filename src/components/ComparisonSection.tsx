@@ -99,7 +99,7 @@ const ComparisonSection = () => {
                   <motion.div
                     key={competitor.name}
                     className={`logo-card p-4 rounded-xl ${
-                      theme === "dark" ? "bg-dark-card/90" : "bg-white"
+                      theme === "dark" ? "bg-dark-card/90" : "bg-gray-100"
                     }`}
                     variants={logoVariants}
                     initial="hidden"
