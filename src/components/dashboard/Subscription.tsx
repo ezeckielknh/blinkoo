@@ -234,7 +234,7 @@ const Subscription = () => {
       price: "0 FCFA",
       period: "pour toujours",
       features: [
-        "10 liens/mois",
+        "15 liens/mois",
         "Analytique de base",
         "QR codes standards",
         "Partage de fichiers jusqu'à 100 MB",
@@ -318,27 +318,7 @@ const Subscription = () => {
           !Array.isArray(user?.access) &&
           user?.access?.trial_status === "active"),
     },
-    {
-      name: "Bliic Enterprise",
-      key: "enterprise",
-      price: "Contactez-nous",
-      period: "mois",
-      features: [
-        "Liens illimités",
-        "Analytique avancée",
-        "QR codes personnalisés",
-        "Partage de fichiers jusqu'à 1 GB",
-        "Stockage illimité",
-        "2 domaines personnalisés",
-        "Support prioritaire",
-        "Accès bêta + badge",
-      ],
-      disabled:
-        user?.plan === "enterprise" ||
-        (typeof user?.access === "object" &&
-          !Array.isArray(user?.access) &&
-          user?.access?.trial_status === "active"),
-    },
+    
   ];
 
   const cardVariants = {
