@@ -241,11 +241,7 @@ const Subscription = () => {
         "Stockage total de 200 MB",
         "Bliic visible",
       ],
-      disabled:
-        user?.plan === "free" &&
-        typeof user?.access === "object" &&
-        !Array.isArray(user?.access) &&
-        user?.access?.trial_status !== "active",
+      disabled: user?.plan === "free",
     },
     {
       name: "Bliic Premium Mensuel",
@@ -265,14 +261,7 @@ const Subscription = () => {
         "Domaine personnalisé",
         "Suppression branding",
       ],
-      disabled:
-        user?.plan === "premium" ||
-        user?.plan === "premium_quarterly" ||
-        user?.plan === "premium_annual" ||
-        user?.plan === "enterprise" ||
-        (typeof user?.access === "object" &&
-          !Array.isArray(user?.access) &&
-          user?.access?.trial_status === "active"),
+      disabled: user?.plan === "premium",
     },
     {
       name: "Bliic Premium Trimestriel",
@@ -289,13 +278,7 @@ const Subscription = () => {
         "Domaine personnalisé",
         "Support + MàJ anticipée",
       ],
-      disabled:
-        user?.plan === "premium_quarterly" ||
-        user?.plan === "premium_annual" ||
-        user?.plan === "enterprise" ||
-        (typeof user?.access === "object" &&
-          !Array.isArray(user?.access) &&
-          user?.access?.trial_status === "active"),
+      disabled: user?.plan === "premium_quarterly",
     },
     {
       name: "Bliic Premium Annuel",
@@ -311,14 +294,24 @@ const Subscription = () => {
         "2 domaines personnalisés",
         "Accès bêta + badge",
       ],
-      disabled:
-        user?.plan === "premium_annual" ||
-        user?.plan === "enterprise" ||
-        (typeof user?.access === "object" &&
-          !Array.isArray(user?.access) &&
-          user?.access?.trial_status === "active"),
+      disabled: user?.plan === "premium_annual",
     },
-    
+    {
+      name: "Bliic Enterprise",
+      key: "enterprise",
+      price: "Contactez-nous",
+      period: "mois",
+      features: [
+        "Liens illimités",
+        "Analytique avancée",
+        "QR codes personnalisés",
+        "Partage de fichiers jusqu'à 1 GB",
+        "Stockage illimité",
+        "2 domaines personnalisés",
+        "Support prioritaire",
+      ],
+      disabled: user?.plan === "enterprise",
+    },
   ];
 
   const cardVariants = {
@@ -484,7 +477,7 @@ const Subscription = () => {
                 } mb-4 font-sans`}
               >
                 {typeof user?.access === "object" &&
-                !Array.isArray(user?.access) &&
+                !Array.isArray(user.access) &&
                 user?.access?.trial_status === "active"
                   ? `${getTrialDaysRemaining()} jour(s) restant(s) dans votre essai Premium.`
                   : typeof user?.access === "object" &&
@@ -492,11 +485,7 @@ const Subscription = () => {
                     user?.access?.trial_status === "expired"
                   ? "Votre essai Premium a expiré. Passez à un plan Premium ou Enterprise pour continuer !"
                   : user?.plan === "free"
-                  ? typeof user?.access === "object" &&
-                    !Array.isArray(user?.access) &&
-                    user?.access?.trial_status === "none"
-                    ? "Passez à un plan Premium ou Enterprise pour débloquer toutes les fonctionnalités !"
-                    : "Votre plan Bliic Découverte est actif."
+                  ? "Passez à un plan Premium ou Enterprise pour débloquer toutes les fonctionnalités !"
                   : "Vous avez un accès complet aux fonctionnalités Premium."}
               </p>
             </div>
@@ -845,99 +834,3 @@ const Subscription = () => {
 };
 
 export default Subscription;
-// ```
-
-// ### Explanation of Changes
-
-// 1. **Dependencies and Styling**:
-//    - Added `framer-motion` import to support animations similar to `PricingSection.tsx`.
-//    - Incorporated the same CSS styles for `.pricing-card`, `.cta-button`, `.popular-button`, and gradient borders, ensuring visual consistency.
-//    - Kept the background icons animation but removed unused icons (e.g., `CreditCard`, `Gift`, `Calendar`, `Clock`, `Award`) since `PricingSection.tsx` uses specific icons per plan, but we don’t need them in the subscription page’s grid.
-
-// 2. **Plans Array**:
-//    - **Bliic Découverte** (`key: "free"`):
-//      - Price: "0 FCFA"
-//      - Period: "pour toujours"
-//      - Features: Updated to match `PricingSection.tsx` and backend:
-//        - "10 liens/mois"
-//        - "Analytique de base"
-//        - "QR codes standards"
-//        - "Partage de fichiers jusqu'à 100 MB" (matches backend)
-//        - "Stockage total de 200 MB" (matches backend)
-//        - "Bliic visible"
-//      - Disabled if the user is on the free plan and not in an active trial.
-//    - **Bliic Premium Mensuel** (`key: "premium"`):
-//      - Price: "5 500 FCFA"
-//      - Period: "mois"
-//      - Promotion: "3 500 FCFA" until October 9, 2025
-//      - Features:
-//        - "Liens illimités"
-//        - "Analytique avancée"
-//        - "QR codes personnalisés"
-//        - "Partage de fichiers jusqu'à 1 GB" (matches backend)
-//        - "Stockage total de 10 GB" (matches backend)
-//        - "Domaine personnalisé"
-//        - "Suppression branding"
-//      - Disabled if the user is on any paid plan or in an active trial.
-//    - **Bliic Premium Trimestriel** (`key: "premium_quarterly"`):
-//      - Price: "14 900 FCFA"
-//      - Period: "3 mois"
-//      - Popular: `true` (adds "Populaire" badge)
-//      - Features:
-//        - Same as Premium Mensuel, plus "Support + MàJ anticipée"
-//        - Includes backend-aligned storage/file size limits
-//      - Disabled if the user is on Trimestriel, Annuel, Enterprise, or in an active trial.
-//    - **Bliic Premium Annuel** (`key: "premium_annual"`):
-//      - Price: "39 000 FCFA"
-//      - Period: "an"
-//      - Features:
-//        - Same as Premium Mensuel, plus "2 domaines personnalisés" and "Accès bêta + badge"
-//        - Includes backend-aligned storage/file size limits
-//      - Disabled if the user is on Annuel, Enterprise, or in an active trial.
-//    - **Bliic Enterprise** (`key: "enterprise"`):
-//      - Price: "Contactez-nous"
-//      - Period: "mois"
-//      - Features:
-//        - Same as Annuel, plus "Stockage illimité" (matches backend) and "Support prioritaire"
-//      - Disabled if the user is on Enterprise or in an active trial.
-
-// 3. **Payment Logic**:
-//    - Updated `confirmPayment` to use the correct amounts in FCFA (XOF):
-//      - Premium Mensuel: 3,500 FCFA if before October 9, 2025, else 5,500 FCFA
-//      - Premium Trimestriel: 14,900 FCFA
-//      - Premium Annuel: 39,000 FCFA
-//      - Enterprise: Placeholder 100,000 FCFA (adjustable based on your requirements)
-//    - Added `isPromoActive` check using `new Date() < new Date("2025-10-09")` to apply the promotional price dynamically.
-//    - Kept currency as "XOF" to match the backend API expectation (FCFA is a user-facing label).
-
-// 4. **UI and Animations**:
-//    - Added `motion` components for the heading, description, and summary card to match the animation style of `PricingSection.tsx`.
-//    - Applied `cardVariants` for plan cards with staggered animations.
-//    - Added "Populaire" badge for the Trimestriel plan with the same styling and animation as `PricingSection.tsx`.
-//    - Included promotional text for Premium Mensuel below the price, matching the `PricingSection.tsx` format.
-//    - Kept the background icons animation for consistency with the original `Subscription.tsx`.
-
-// 5. **Summary Card**:
-//    - Updated plan names in the summary card to match: "Bliic Découverte", "Bliic Premium Mensuel", "Bliic Premium Trimestriel", "Bliic Premium Annuel", "Bliic Enterprise".
-//    - Updated trial status messages to reference "Premium ou Enterprise" for consistency.
-
-// 6. **Payment Modal**:
-//    - Updated the modal title to use the correct plan names.
-//    - Kept the existing phone input and network selection logic, as it’s functional and unaffected by the pricing changes.
-
-// ### Additional Notes
-// - **Enterprise Pricing**: The Enterprise plan uses "Contactez-nous" in the UI and a placeholder 100,000 FCFA in the payment logic. If you want to redirect Enterprise users to a contact form instead of the payment flow, modify the `handleUpgrade` function for `enterprise` to redirect (e.g., `window.location.href = "/contact"`) or provide a specific price.
-// - **Currency Consistency**: The UI uses "FCFA" for user-facing display, but the API uses "XOF" (as per the backend). This is intentional to align with regional conventions while maintaining API compatibility.
-// - **Promotion Date**: The promotion for Premium Mensuel is hardcoded to end on October 9, 2025. If this needs to be dynamic (e.g., fetched from an API), let me know, and I can adjust the logic.
-// - **Backend Consistency**: Ensure the backend API (`API.TRANSACTIONS.CREATE` and `API.TRANSACTIONS.VERIFY`) supports the updated plan names and prices. You may need to update the backend to handle the promotional price (3,500 FCFA for Premium Mensuel) and Enterprise plan.
-// - **FileManager.tsx Consistency**: The file size and storage limits in `FileManager.tsx` (from previous context) align with the updated `Subscription.tsx` (100 MB/200 MB for Free, 1 GB/10 GB for Premium plans, 1 GB/unlimited for Enterprise).
-// - **Styling**: The gradient colors (`#eab308` and `#7c3aed`) match the email template and `PricingSection.tsx` for brand consistency.
-
-// ### Testing Recommendations
-// - **Plan Display**: Verify that all plans display correctly with the updated names, prices, and features, and that the Premium Mensuel plan shows the promotional price (3,500 FCFA) until October 9, 2025.
-// - **Payment Flow**: Test the payment flow for each plan, ensuring the correct amount is sent to the API (3,500/5,500 FCFA for Premium Mensuel based on the date, 14,900 FCFA for Trimestriel, 39,000 FCFA for Annuel).
-// - **Styling**: Check that the animations, gradient borders, and "Populaire" badge render correctly in both light and dark themes.
-// - **Trial Status**: Ensure the summary card and trial messages correctly reflect the user’s plan and trial status.
-// - **Enterprise**: Verify that the Enterprise plan’s "Contacter le Support" button is clear, and decide if it should trigger the payment flow or redirect to a contact form.
-
-// If you have additional promotion details (e.g., new discounts for other plans) or specific requirements for the Enterprise plan (e.g., custom pricing or contact form integration), please share them, and I can refine the code further. Let me know if you need backend adjustments or additional clarifications!
