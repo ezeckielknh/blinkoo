@@ -1,78 +1,60 @@
-
 import { useTheme } from "../contexts/ThemeContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
-
-type FeatureKey = "links" | "fileSharing" | "storage" | "analytics" | "qrCodes" | "customDomains" | "branding";
-
-interface Comparison {
-  name: string;
-  features: Record<FeatureKey, string>;
-  isBliic: boolean;
-}
 
 const ComparisonSection = () => {
   const { theme } = useTheme();
 
-  const comparisons: Comparison[] = [
+  const competitors = [
+    { name: "Bitly", logoDark: "assets/img/landing/tools/bitly-dark.svg", logoLight: "assets/img/landing/tools/bitly-light.svg" },
+    { name: "Kloo", logoDark: "assets/img/landing/tools/kloo-dark.svg", logoLight: "assets/img/landing/tools/kloo-light.svg" },
+    { name: "Short.io", logoDark: "assets/img/landing/tools/shortio-dark.svg", logoLight: "assets/img/landing/tools/shortio-light.svg" },
+    { name: "TinyURL", logoDark: "assets/img/landing/tools/tinyurl-dark.svg", logoLight: "assets/img/landing/tools/tinyurl-light.svg" },
+    { name: "Rebrandly", logoDark: "assets/img/landing/tools/rebrandly-dark.svg", logoLight: "assets/img/landing/tools/rebrandly-light.svg" },
+    { name: "Linkly", logoDark: "assets/img/landing/tools/linkly-dark.svg", logoLight: "assets/img/landing/tools/linkly-light.svg" },
+  ];
+
+  const advantages = [
     {
-      name: "Bliic",
-      features: {
-        links: "Illimités (Premium)",
-        fileSharing: "1 GB (Premium)",
-        storage: "10 GB (Premium), Illimité (Enterprise)",
-        analytics: "Avancée",
-        qrCodes: "Personnalisés",
-        customDomains: "Oui (1-2)",
-        branding: "Aucun (Premium)",
-      },
-      isBliic: true,
+      title: "Liens illimités",
+      description: "Bliic offre des liens illimités avec le plan Premium, contrairement à Bitly (100/mois max sur Core) ou TinyURL (limité sur gratuit).",
     },
     {
-      name: "Solution A",
-      features: {
-        links: "5/mois",
-        fileSharing: "50 MB",
-        storage: "100 MB",
-        analytics: "Basique",
-        qrCodes: "Standards",
-        customDomains: "Non",
-        branding: "Obligatoire",
-      },
-      isBliic: false,
+      title: "Partage de fichiers généreux",
+      description: "Partagez jusqu'à 1 GB par fichier, bien au-dessus des 50-500 MB des concurrents comme Short.io ou Linkly, qui n'offrent pas de partage de fichiers.",
     },
     {
-      name: "Solution B",
-      features: {
-        links: "20/mois",
-        fileSharing: "500 MB",
-        storage: "1 GB",
-        analytics: "Limitée",
-        qrCodes: "Standards",
-        customDomains: "Non",
-        branding: "Partiel",
-      },
-      isBliic: false,
+      title: "Stockage abondant",
+      description: "Obtenez 10 GB (Premium) ou illimité (Enterprise), contre 100 MB (TinyURL) ou 1 GB (Rebrandly) chez les autres.",
+    },
+    {
+      title: "Analytique avancée",
+      description: "Bliic fournit des analyses détaillées (clics, localisation, appareils), surpassant les analyses basiques de TinyURL ou limitées de Short.io.",
+    },
+    {
+      title: "QR codes personnalisés",
+      description: "Créez des QR codes avec votre logo et couleurs, contrairement aux QR standards de Bitly (payants) ou TinyURL.",
+    },
+    {
+      title: "Domaines personnalisés",
+      description: "Supporte 1-2 domaines personnalisés, une fonctionnalité absente chez TinyURL et limitée chez Short.io sans frais supplémentaires.",
+    },
+    {
+      title: "Aucun branding imposé",
+      description: "Supprimez le branding Bliic avec Premium, contrairement à Bitly ou Rebrandly, qui imposent leur marque sur les plans gratuits.",
+    },
+    {
+      title: "Paiements par mobile money",
+      description: "Payez avec M-Pesa, Airtel Money, etc., une option unique que Bitly, Kloo, Short.io, TinyURL, Rebrandly et Linkly ne proposent pas.",
     },
   ];
 
-  const features: { key: FeatureKey; label: string }[] = [
-    { key: "links", label: "Liens par mois" },
-    { key: "fileSharing", label: "Partage de fichiers" },
-    { key: "storage", label: "Stockage total" },
-    { key: "analytics", label: "Analytique" },
-    { key: "qrCodes", label: "QR codes" },
-    { key: "customDomains", label: "Domaines personnalisés" },
-    { key: "branding", label: "Branding" },
-  ];
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
+  const logoVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
     visible: (i: number) => ({
       opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.1, duration: 0.3 },
+      scale: 1,
+      transition: { delay: i * 0.1, duration: 0.3, ease: "easeOut" },
     }),
   };
 
@@ -80,40 +62,16 @@ const ComparisonSection = () => {
     <section className="py-16">
       <style>
         {`
-          .comparison-card {
+          .logo-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             perspective: 1000px;
           }
-          .comparison-card:hover {
-            transform: translateY(-4px) rotateX(2deg) rotateY(2deg);
+          .logo-card:hover {
+            transform: translateY(-4px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2),
                         0 0 20px ${
                           theme === "dark" ? "rgba(234, 179, 8, 0.3)" : "rgba(124, 58, 237, 0.3)"
                         };
-          }
-          .comparison-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 1rem;
-            padding: 2px;
-            background: linear-gradient(
-              45deg,
-              ${theme === "dark" ? "#eab308" : "#7c3aed"},
-              ${theme === "dark" ? "#7c3aed" : "#eab308"}
-            );
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-          }
-          .comparison-card:hover::before {
-            opacity: 1;
           }
           .cta-button {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -121,10 +79,6 @@ const ComparisonSection = () => {
           .cta-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-          }
-          .highlight-card {
-            border-width: 2px;
-            border-color: ${theme === "dark" ? "#7c3aed" : "#eab308"};
           }
         `}
       </style>
@@ -142,15 +96,24 @@ const ComparisonSection = () => {
                   theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"
                 } font-sans`}
               >
-                Pourquoi choisir Bliic ?
+                Pourquoi Bliic surpasse les autres
               </h2>
-              <p
-                className={`pb-3 mb-3 lg:mb-4 max-w-lg mx-auto lg:mx-0 text-base ${
-                  theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"
-                } font-sans`}
-              >
-                Contrairement aux autres solutions, Bliic offre des liens illimités, un partage de fichiers jusqu'à 1 GB, un stockage généreux, des analyses avancées et des options de personnalisation sans branding imposé. Profitez de notre flexibilité et de nos plans abordables pour une expérience sans compromis.
-              </p>
+              <ul className="space-y-3 mb-4 max-w-lg mx-auto lg:mx-0">
+                {advantages.map((advantage, index) => (
+                  <motion.li
+                    key={advantage.title}
+                    className={`text-base ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"} font-sans`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <strong className={`${theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"}`}>
+                      {advantage.title} :
+                    </strong>{" "}
+                    {advantage.description}
+                  </motion.li>
+                ))}
+              </ul>
               <Link
                 to="/subscription"
                 className={`cta-button hidden lg:inline-flex px-6 py-3 rounded-lg font-semibold text-base font-sans ${
@@ -168,54 +131,22 @@ const ComparisonSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-3 xl:gap-4">
-                {comparisons.map((solution, index) => (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-3 xl:gap-4">
+                {competitors.map((competitor, index) => (
                   <motion.div
-                    key={solution.name}
-                    className={`comparison-card p-4 rounded-xl ${
-                      theme === "dark" ? "bg-dark-card/90" : "bg-light-card/90"
-                    } ${solution.isBliic ? "highlight-card" : "border border-dark-text-secondary/50"}`}
-                    variants={cardVariants}
+                    key={competitor.name}
+                    className={`logo-card p-4 rounded-xl ${theme === "dark" ? "bg-dark-card/90" : "bg-light-card/90"}`}
+                    variants={logoVariants}
                     initial="hidden"
                     animate="visible"
                     custom={index}
                     whileHover={{ scale: 1.05 }}
                   >
-                    <h3
-                      className={`text-xl font-bold mb-4 text-center ${
-                        theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"
-                      } font-sans`}
-                    >
-                      {solution.name}
-                    </h3>
-                    <ul className="space-y-2">
-                      {features.map((feature) => (
-                        <li
-                          key={feature.key}
-                          className={`flex items-center text-sm ${
-                            theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"
-                          } font-sans`}
-                        >
-                          {solution.features[feature.key].includes("Illimités") ||
-                          solution.features[feature.key].includes("Oui") ||
-                          solution.features[feature.key].includes("Aucun") ||
-                          solution.features[feature.key].includes("Avancée") ||
-                          solution.features[feature.key].includes("Personnalisés") ||
-                          solution.features[feature.key].includes("Illimité") ? (
-                            <Check
-                              size={16}
-                              className={`mr-2 ${theme === "dark" ? "text-dark-primary" : "text-light-primary"}`}
-                            />
-                          ) : (
-                            <X
-                              size={16}
-                              className={`mr-2 ${theme === "dark" ? "text-dark-danger" : "text-light-danger"}`}
-                            />
-                          )}
-                          <span>{solution.features[feature.key]}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <img
+                      src={theme === "dark" ? competitor.logoDark : competitor.logoLight}
+                      alt={`${competitor.name} logo`}
+                      className="mx-auto h-12 w-auto"
+                    />
                   </motion.div>
                 ))}
               </div>
