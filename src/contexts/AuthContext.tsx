@@ -33,7 +33,8 @@ interface User {
       }
     | null
     | undefined; // Supporte une chaîne JSON, un tableau, ou un objet avec permissions
-      subscription_ends_at?: string;
+  subscription_ends_at?: string;
+  renew_plan?: boolean; // Ajout du champ renew_plan
   created_at?: string;
   updated_at?: string;
 }

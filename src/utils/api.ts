@@ -48,6 +48,7 @@ export const API = {
     TRIAL_START: `${BASE_URL}/trial/start`, // Nouvelle route
     TRIAL_STATUS: `${BASE_URL}/trial/status`,
     GET_API_KEY: `${BASE_URL}/user/api-key`,
+    TOGGLE_RENEW_PLAN: `${BASE_URL}/users/toggle-renew-plan`,
   },
   TRANSACTIONS: {
     GET_ALL: `${BASE_URL}/transactions`,
