@@ -32,7 +32,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'Segoe UI', 'sans-serif'],
+        sans: ['Poppins', 'Inter', 'Segoe UI', 'sans-serif'],
       },
       borderRadius: {
         lg: '10px',
