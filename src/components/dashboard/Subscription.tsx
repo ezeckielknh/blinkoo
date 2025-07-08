@@ -1,3 +1,4 @@
+
 import {
   CreditCard,
   Check,
@@ -22,7 +23,7 @@ interface User {
   id: string;
   email: string;
   name: string;
-  plan: "free" | "premium" | "premium_quarterly" | "premium_annual";
+  plan: "free" | "premium" | "premium_quarterly" | "premium_annual" | "enterprise";
   role: "user" | "admin" | "super_admin";
   access: {
     trial_started_at?: string;
@@ -38,7 +39,7 @@ const Subscription = () => {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<
-    "premium" | "premium_quarterly" | "premium_annual" | null
+    "premium" | "premium_quarterly" | "premium_annual" | "enterprise" | null
   >(null);
   const [phone, setPhone] = useState("");
   const [network, setNetwork] = useState<"MTN" | "MOOV">("MTN");
@@ -61,7 +62,7 @@ const Subscription = () => {
   };
 
   const handleUpgrade = (
-    plan: "premium" | "premium_quarterly" | "premium_annual"
+    plan: "premium" | "premium_quarterly" | "premium_annual" | "enterprise"
   ) => {
     setSelectedPlan(plan);
     setPhone("");
@@ -95,7 +96,9 @@ const Subscription = () => {
               ? 100
               : selectedPlan === "premium_quarterly"
               ? 255
-              : 480, // Prix initiaux
+              : selectedPlan === "premium_annual"
+              ? 480
+              : 1000, // Placeholder for enterprise
           currency: "XOF",
           network,
           phone: fullPhone,
@@ -136,7 +139,6 @@ const Subscription = () => {
   };
 
   useEffect(() => {
-    console.log(selectedPlan);
     if (verificationStatus !== "verifying" || !transactionId) return;
 
     let attempt = 0;
@@ -160,12 +162,11 @@ const Subscription = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
-        body: JSON.stringify({ transaction_id: transactionId , plan: selectedPlan,}),
+        body: JSON.stringify({ transaction_id: transactionId, plan: selectedPlan }),
       })
         .then((verifyRes) => verifyRes.json())
         .then((verifyData) => {
           if (verifyData.plan) {
-            console.log(selectedPlan);
             clearInterval(interval);
             clearInterval(countdownTick);
             refreshUser();
@@ -231,7 +232,8 @@ const Subscription = () => {
         "10 liens/mois",
         "Analytique de base",
         "QR codes standards",
-        "Partage de fichiers jusqu'à 5MB",
+        "Partage de fichiers jusqu'à 100MB",
+        "Stockage total de 200MB",
       ],
       disabled:
         user?.plan === "free" &&
@@ -242,19 +244,21 @@ const Subscription = () => {
     {
       name: "Premium",
       key: "premium",
-      price: "10", // Retour au prix initial
+      price: "10",
       period: "mois",
       features: [
         "Liens illimités",
         "Analytique avancée",
         "QR codes personnalisés",
-        "Partage de fichiers jusqu'à 100MB",
+        "Partage de fichiers jusqu'à 1GB",
+        "Stockage total de 10GB",
         "Domaines personnalisés",
       ],
       disabled:
         user?.plan === "premium" ||
         user?.plan === "premium_quarterly" ||
         user?.plan === "premium_annual" ||
+        user?.plan === "enterprise" ||
         (typeof user?.access === "object" &&
           !Array.isArray(user?.access) &&
           user?.access?.trial_status === "active"),
@@ -262,19 +266,21 @@ const Subscription = () => {
     {
       name: "Premium Trimestriel",
       key: "premium_quarterly",
-      price: "25", // Inchangé (15% de réduction par mois)
+      price: "25",
       period: "3 mois",
       features: [
         "Liens illimités",
         "Analytique avancée",
         "QR codes personnalisés",
-        "Partage de fichiers jusqu'à 100MB",
+        "Partage de fichiers jusqu'à 1GB",
+        "Stockage total de 10GB",
         "Domaines personnalisés",
         "15% de réduction par mois",
       ],
       disabled:
         user?.plan === "premium_quarterly" ||
         user?.plan === "premium_annual" ||
+        user?.plan === "enterprise" ||
         (typeof user?.access === "object" &&
           !Array.isArray(user?.access) &&
           user?.access?.trial_status === "active"),
@@ -282,18 +288,40 @@ const Subscription = () => {
     {
       name: "Premium Annuel",
       key: "premium_annual",
-      price: "48", // Inchangé (60% de réduction par mois)
+      price: "48",
       period: "an",
       features: [
         "Liens illimités",
         "Analytique avancée",
         "QR codes personnalisés",
-        "Partage de fichiers jusqu'à 100MB",
+        "Partage de fichiers jusqu'à 1GB",
+        "Stockage total de 10GB",
         "Domaines personnalisés",
         "60% de réduction par mois",
       ],
       disabled:
         user?.plan === "premium_annual" ||
+        user?.plan === "enterprise" ||
+        (typeof user?.access === "object" &&
+          !Array.isArray(user?.access) &&
+          user?.access?.trial_status === "active"),
+    },
+    {
+      name: "Enterprise",
+      key: "enterprise",
+      price: "Contactez-nous",
+      period: "mois",
+      features: [
+        "Liens illimités",
+        "Analytique avancée",
+        "QR codes personnalisés",
+        "Partage de fichiers jusqu'à 1GB",
+        "Stockage illimité",
+        "Domaines personnalisés",
+        "Support prioritaire",
+      ],
+      disabled:
+        user?.plan === "enterprise" ||
         (typeof user?.access === "object" &&
           !Array.isArray(user?.access) &&
           user?.access?.trial_status === "active"),
@@ -384,6 +412,8 @@ const Subscription = () => {
                     ? "Premium Trimestriel"
                     : user.plan === "premium_annual"
                     ? "Premium Annuel"
+                    : user.plan === "enterprise"
+                    ? "Enterprise"
                     : user.plan.charAt(0).toUpperCase() + user.plan.slice(1))}
               </h2>
               <p
@@ -400,12 +430,12 @@ const Subscription = () => {
                   : typeof user?.access === "object" &&
                     !Array.isArray(user?.access) &&
                     user?.access?.trial_status === "expired"
-                  ? "Votre essai Premium a expiré. Passez à Premium pour continuer !"
+                  ? "Votre essai Premium a expiré. Passez à Premium ou Enterprise pour continuer !"
                   : user?.plan === "free"
                   ? typeof user?.access === "object" &&
                     !Array.isArray(user?.access) &&
                     user?.access?.trial_status === "none"
-                    ? "Passez à Premium pour débloquer toutes les fonctionnalités !"
+                    ? "Passez à Premium ou Enterprise pour débloquer toutes les fonctionnalités !"
                     : "Votre plan gratuit est actif."
                   : "Vous avez un accès complet aux fonctionnalités Premium."}
               </p>
@@ -465,7 +495,7 @@ const Subscription = () => {
                         : "text-light-text-primary"
                     } font-sans`}
                   >
-                    {plan.price} XOF
+                    {plan.price} {plan.key !== "enterprise" ? "XOF" : ""}
                   </span>
                   <span
                     className={`text-base ${
@@ -508,6 +538,7 @@ const Subscription = () => {
                         | "premium"
                         | "premium_quarterly"
                         | "premium_annual"
+                        | "enterprise"
                     )
                   }
                   className={`w-full py-3 rounded-lg font-semibold ${
@@ -524,7 +555,11 @@ const Subscription = () => {
                       : `Passer au plan ${plan.name}`
                   }
                 >
-                  {plan.disabled ? "Plan Actuel" : "Passer au Plan"}
+                  {plan.disabled
+                    ? "Plan Actuel"
+                    : plan.key === "enterprise"
+                    ? "Contacter le Support"
+                    : "Passer au Plan"}
                 </button>
               )}
             </div>
@@ -543,6 +578,8 @@ const Subscription = () => {
                 ? "Premium Trimestriel"
                 : selectedPlan === "premium_annual"
                 ? "Premium Annuel"
+                : selectedPlan === "enterprise"
+                ? "Enterprise"
                 : "Premium"
               : ""
           }`}
@@ -771,3 +808,49 @@ const Subscription = () => {
 };
 
 export default Subscription;
+
+
+// ### Explanation of Changes
+
+// 1. **User Interface Update**:
+//    - Updated the `User` interface to include `enterprise` as a valid plan type to match the backend logic.
+
+// 2. **Plans Array**:
+//    - **Free Plan**:
+//      - Updated "Partage de fichiers jusqu'à 5MB" to "Partage de fichiers jusqu'à 100MB" to match the backend (`100 * 1024 * 1024` bytes).
+//      - Added "Stockage total de 200MB" to reflect the backend limit (`200 * 1024 * 1024` bytes).
+//    - **Premium, Premium Quarterly, Premium Annual**:
+//      - Updated "Partage de fichiers jusqu'à 100MB" to "Partage de fichiers jusqu'à 1GB" to match the backend (`1024 * 1024 * 1024` bytes).
+//      - Added "Stockage total de 10GB" to reflect the backend limit (`10 * 1024 * 1024 * 1024` bytes).
+//      - Kept existing features (unlimited links, advanced analytics, custom QR codes, custom domains).
+//      - Maintained discounts: 15% for Premium Trimestriel (~8.33 XOF/month vs. 10 XOF/month), 60% for Premium Annuel (4 XOF/month vs. 10 XOF/month).
+//    - **Enterprise Plan**:
+//      - Added a new plan with `key: "enterprise"`, `price: "Contactez-nous"`, and `period: "mois"`.
+//      - Features include all Premium features plus "Stockage illimité" and "Support prioritaire" to reflect the backend's unlimited storage and to differentiate it as a high-tier plan.
+//      - Disabled if the user is already on the Enterprise plan or in an active trial.
+//    - **Disabled Logic**:
+//      - Updated to include `enterprise` in the disable checks to prevent users from selecting their current plan or downgrading during a trial.
+
+// 3. **Payment Handling**:
+//    - Updated `selectedPlan` state to include `enterprise` as a valid type.
+//    - Modified `confirmPayment` to include a placeholder amount for Enterprise (1000 XOF, adjustable based on your requirements).
+//    - Updated the modal title to handle the Enterprise plan name.
+//    - Adjusted the button text for Enterprise to "Contacter le Support" to reflect that pricing may require custom negotiation, while still allowing the payment flow for consistency (you can modify this to redirect to a contact form if preferred).
+
+// 4. **Display Logic**:
+//    - Updated the plan display in the summary card to show "Enterprise" when applicable.
+//    - Modified the trial status message to mention "Premium ou Enterprise" where relevant.
+
+// ### Additional Notes
+// - **Enterprise Pricing**: The placeholder price for Enterprise is set to "Contactez-nous" in the UI and 1000 XOF in the payment logic. If you have a specific price or want to bypass the payment flow for Enterprise (e.g., redirect to a contact form), let me know, and I can adjust the `confirmPayment` function or button behavior.
+// - **Promotions**: The existing discounts (15% for quarterly, 60% for annual) are highlighted as promotional incentives. If you have specific promotional prices (e.g., temporary reductions like 8 XOF/month for Premium), please provide them, and I can update the `plans` array and `confirmPayment` logic.
+// - **Backend Consistency**: Ensure the backend API (`API.TRANSACTIONS.CREATE` and `API.TRANSACTIONS.VERIFY`) supports the `enterprise` plan. You may need to update the backend to handle Enterprise plan payments or redirect to a custom flow.
+// - **FileManager.tsx Consistency**: The `FileManager.tsx` file (from the previous context) uses the correct storage limits (100 MB for Free, 1 GB for Premium/Enterprise, 200 MB/10 GB storage). No changes are needed there, as it aligns with the updated `Subscription.tsx`.
+
+// ### Testing Recommendations
+// - **Plan Display**: Verify that all plans (Free, Premium, Premium Trimestriel, Premium Annuel, Enterprise) display correctly with updated features and prices.
+// - **Payment Flow**: Test the payment flow for each plan, especially Enterprise, to ensure the API handles it correctly or redirects appropriately.
+// - **UI Consistency**: Check that the Enterprise plan's "Contactez-nous" price and button text are clear to users, and adjust styling if needed for visual distinction.
+// - **Trial Status**: Ensure the trial status messages reflect the possibility of upgrading to Premium or Enterprise.
+
+// If you have specific promotion details (e.g., new prices, temporary discounts, or additional features), please share them, and I can refine the pricing or features further. Let me know if you need backend adjustments to support the Enterprise plan or any other clarifications!
