@@ -296,22 +296,7 @@ const Subscription = () => {
       ],
       disabled: user?.plan === "premium_annual",
     },
-    {
-      name: "Bliic Enterprise",
-      key: "enterprise",
-      price: "Contactez-nous",
-      period: "mois",
-      features: [
-        "Liens illimités",
-        "Analytique avancée",
-        "QR codes personnalisés",
-        "Partage de fichiers jusqu'à 1 GB",
-        "Stockage illimité",
-        "2 domaines personnalisés",
-        "Support prioritaire",
-      ],
-      disabled: user?.plan === "enterprise",
-    },
+    
   ];
 
   const cardVariants = {
