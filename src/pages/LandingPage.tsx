@@ -5,6 +5,7 @@ import PricingSection from "../components/PricingSection";
 import FAQSection from "../components/FAQSection";
 import CTASection from "../components/CTASection";
 import WhyChooseUsSection from "../components/WhyChooseUsSection";
+import ComparisonSection from "../components/ComparisonSection";
 
 const LandingPage = () => {
   return (
@@ -23,6 +24,9 @@ const LandingPage = () => {
 
       {/* Pricing */}
       <PricingSection />
+
+      {/* comparison */}
+      <ComparisonSection />
 
       {/* FAQ */}
       <FAQSection />
