@@ -2,7 +2,6 @@ import { useTheme } from "../contexts/ThemeContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import BitlyLo from "../assets/bitly_logo.svg";
-import KlooLo from "../assets/Logo-Kloo.me-1.png";
 import ShortioLo from "../assets/short.svg";
 import TinyURLLo from "../assets/TinyURL.png";
 import RebrandlyLo from "../assets/rebrandly.png";
@@ -13,7 +12,6 @@ const ComparisonSection = () => {
 
   const competitors = [
     { name: "Bitly", logoDark: BitlyLo, logoLight: BitlyLo },
-    { name: "Kloo", logoDark: KlooLo, logoLight: KlooLo },
     { name: "Short.io", logoDark: ShortioLo, logoLight: ShortioLo },
     { name: "TinyURL", logoDark: TinyURLLo, logoLight: TinyURLLo },
     { name: "Rebrandly", logoDark: RebrandlyLo, logoLight: RebrandlyLo },
@@ -36,6 +34,9 @@ const ComparisonSection = () => {
           .logo-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             perspective: 1000px;
+            border: 1px solid ${
+              theme === "dark" ? "rgba(234, 179, 8, 0.2)" : "rgba(124, 58, 237, 0.2)"
+            };
           }
           .logo-card:hover {
             transform: translateY(-4px);
@@ -74,7 +75,7 @@ const ComparisonSection = () => {
                   theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"
                 } font-sans`}
               >
-                Bliic surpasse les concurrents avec des liens illimités, un partage de fichiers jusqu'à 1 GB et un stockage généreux. Nos analyses avancées, QR codes personnalisés et domaines sans branding offrent une flexibilité inégalée. Payez facilement via mobile money, une option absente chez Bitly, Kloo et autres.
+                Bliic surpasse les concurrents avec des liens illimités, un partage de fichiers jusqu'à 1 GB et un stockage généreux. Nos analyses avancées, QR codes personnalisés et domaines sans branding offrent une flexibilité inégalée. Payez facilement via mobile money, une option absente chez Bitly, Short.io et autres.
               </p>
               <Link
                 to="/subscription"
@@ -97,7 +98,9 @@ const ComparisonSection = () => {
                 {competitors.map((competitor, index) => (
                   <motion.div
                     key={competitor.name}
-                    className={`logo-card p-4 rounded-xl ${theme === "dark" ? "bg-dark-card/90" : "bg-light-card/90"}`}
+                    className={`logo-card p-4 rounded-xl ${
+                      theme === "dark" ? "bg-dark-card/90" : "bg-white"
+                    }`}
                     variants={logoVariants}
                     initial="hidden"
                     animate="visible"

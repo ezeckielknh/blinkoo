@@ -43,7 +43,7 @@ const PricingSection = () => {
         "Suppression branding",
       ],
       cta: "Choisir ce plan",
-      ctaLink: "/subscription",
+      ctaLink: "/register",
       popular: false,
       promotion: {
         promoPrice: "3 500 FCFA",
@@ -64,7 +64,7 @@ const PricingSection = () => {
         "Support + MàJ anticipée",
       ],
       cta: "Choisir ce plan",
-      ctaLink: "/subscription",
+      ctaLink: "/register",
       popular: true,
     },
     {
@@ -81,7 +81,7 @@ const PricingSection = () => {
         "Accès bêta + badge",
       ],
       cta: "Choisir ce plan",
-      ctaLink: "/subscription",
+      ctaLink: "/register",
       popular: false,
     },
   ];
