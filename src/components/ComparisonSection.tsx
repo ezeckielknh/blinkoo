@@ -74,7 +74,7 @@ const ComparisonSection = () => {
                   theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"
                 } font-sans`}
               >
-                Bliic surpasse les concurrents avec des liens illimités, un partage de fichiers jusqu'à 1 GB et un stockage généreux. Nos analyses avancées, QR codes personnalisés et domaines sans branding offrent une flexibilité inégalée. Payez facilement via mobile money (M-Pesa, Airtel Money), une option absente chez Bitly, Kloo et autres.
+                Bliic surpasse les concurrents avec des liens illimités, un partage de fichiers jusqu'à 1 GB et un stockage généreux. Nos analyses avancées, QR codes personnalisés et domaines sans branding offrent une flexibilité inégalée. Payez facilement via mobile money, une option absente chez Bitly, Kloo et autres.
               </p>
               <Link
                 to="/subscription"
