@@ -14,41 +14,6 @@ const ComparisonSection = () => {
     { name: "Linkly", logoDark: "assets/img/landing/tools/linkly-dark.svg", logoLight: "assets/img/landing/tools/linkly-light.svg" },
   ];
 
-  const advantages = [
-    {
-      title: "Liens illimités",
-      description: "Bliic offre des liens illimités avec le plan Premium, contrairement à Bitly (100/mois max sur Core) ou TinyURL (limité sur gratuit).",
-    },
-    {
-      title: "Partage de fichiers généreux",
-      description: "Partagez jusqu'à 1 GB par fichier, bien au-dessus des 50-500 MB des concurrents comme Short.io ou Linkly, qui n'offrent pas de partage de fichiers.",
-    },
-    {
-      title: "Stockage abondant",
-      description: "Obtenez 10 GB (Premium) ou illimité (Enterprise), contre 100 MB (TinyURL) ou 1 GB (Rebrandly) chez les autres.",
-    },
-    {
-      title: "Analytique avancée",
-      description: "Bliic fournit des analyses détaillées (clics, localisation, appareils), surpassant les analyses basiques de TinyURL ou limitées de Short.io.",
-    },
-    {
-      title: "QR codes personnalisés",
-      description: "Créez des QR codes avec votre logo et couleurs, contrairement aux QR standards de Bitly (payants) ou TinyURL.",
-    },
-    {
-      title: "Domaines personnalisés",
-      description: "Supporte 1-2 domaines personnalisés, une fonctionnalité absente chez TinyURL et limitée chez Short.io sans frais supplémentaires.",
-    },
-    {
-      title: "Aucun branding imposé",
-      description: "Supprimez le branding Bliic avec Premium, contrairement à Bitly ou Rebrandly, qui imposent leur marque sur les plans gratuits.",
-    },
-    {
-      title: "Paiements par mobile money",
-      description: "Payez avec M-Pesa, Airtel Money, etc., une option unique que Bitly, Kloo, Short.io, TinyURL, Rebrandly et Linkly ne proposent pas.",
-    },
-  ];
-
   const logoVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: (i: number) => ({
@@ -96,24 +61,15 @@ const ComparisonSection = () => {
                   theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"
                 } font-sans`}
               >
-                Pourquoi Bliic surpasse les autres
+                Pourquoi choisir Bliic ?
               </h2>
-              <ul className="space-y-3 mb-4 max-w-lg mx-auto lg:mx-0">
-                {advantages.map((advantage, index) => (
-                  <motion.li
-                    key={advantage.title}
-                    className={`text-base ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"} font-sans`}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                  >
-                    <strong className={`${theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"}`}>
-                      {advantage.title} :
-                    </strong>{" "}
-                    {advantage.description}
-                  </motion.li>
-                ))}
-              </ul>
+              <p
+                className={`pb-3 mb-3 lg:mb-4 max-w-lg mx-auto lg:mx-0 text-base ${
+                  theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"
+                } font-sans`}
+              >
+                Bliic surpasse les concurrents avec des liens illimités, un partage de fichiers jusqu'à 1 GB et un stockage généreux. Nos analyses avancées, QR codes personnalisés et domaines sans branding offrent une flexibilité inégalée. Payez facilement via mobile money (M-Pesa, Airtel Money), une option absente chez Bitly, Kloo et autres.
+              </p>
               <Link
                 to="/subscription"
                 className={`cta-button hidden lg:inline-flex px-6 py-3 rounded-lg font-semibold text-base font-sans ${
