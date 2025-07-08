@@ -90,11 +90,11 @@ const Dashboard = () => {
         user.plan
       )
       ? user.plan === "premium"
-        ? "Premium Mensuel"
+        ? "Mensuel"
         : user.plan === "premium_quarterly"
-        ? "Premium Trimestriel"
+        ? "Trimestriel"
         : user.plan === "premium_annual"
-        ? "Premium Annuel"
+        ? "Annuel"
         : "Enterprise"
       : "Découverte";
   };
