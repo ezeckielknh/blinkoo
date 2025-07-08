@@ -1,17 +1,23 @@
 import { useTheme } from "../contexts/ThemeContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import BitlyLo from "../assets/bitly_logo.svg";
+import KlooLo from "../assets/Logo-Kloo.me-1.png";
+import ShortioLo from "../assets/short.svg";
+import TinyURLLo from "../assets/TinyURL.png";
+import RebrandlyLo from "../assets/rebrandly.png";
+import LinklyLo from "../assets/Linkly2.png";
 
 const ComparisonSection = () => {
   const { theme } = useTheme();
 
   const competitors = [
-    { name: "Bitly", logoDark: "assets/img/landing/tools/bitly-dark.svg", logoLight: "assets/img/landing/tools/bitly-light.svg" },
-    { name: "Kloo", logoDark: "assets/img/landing/tools/kloo-dark.svg", logoLight: "assets/img/landing/tools/kloo-light.svg" },
-    { name: "Short.io", logoDark: "assets/img/landing/tools/shortio-dark.svg", logoLight: "assets/img/landing/tools/shortio-light.svg" },
-    { name: "TinyURL", logoDark: "assets/img/landing/tools/tinyurl-dark.svg", logoLight: "assets/img/landing/tools/tinyurl-light.svg" },
-    { name: "Rebrandly", logoDark: "assets/img/landing/tools/rebrandly-dark.svg", logoLight: "assets/img/landing/tools/rebrandly-light.svg" },
-    { name: "Linkly", logoDark: "assets/img/landing/tools/linkly-dark.svg", logoLight: "assets/img/landing/tools/linkly-light.svg" },
+    { name: "Bitly", logoDark: BitlyLo, logoLight: BitlyLo },
+    { name: "Kloo", logoDark: KlooLo, logoLight: KlooLo },
+    { name: "Short.io", logoDark: ShortioLo, logoLight: ShortioLo },
+    { name: "TinyURL", logoDark: TinyURLLo, logoLight: TinyURLLo },
+    { name: "Rebrandly", logoDark: RebrandlyLo, logoLight: RebrandlyLo },
+    { name: "Linkly", logoDark: LinklyLo, logoLight: LinklyLo },
   ];
 
   const logoVariants = {
