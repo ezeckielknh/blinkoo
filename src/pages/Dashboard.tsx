@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import {
   Menu,
@@ -13,77 +13,44 @@ import {
   LogOut,
   Sun,
   Moon,
-  BarChart2,
-  Users,
-  Package,
-  Shield,
-  Mail,
   BookOpen,
   Globe,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import DashboardHome from "../components/dashboard/DashboardHome";
-import AdminHome from "../components/dashboard/AdminHome";
 import LinksManager from "../components/dashboard/LinksManager";
 import QRGenerator from "../components/dashboard/QRGenerator";
 import FileManager from "../components/dashboard/FileManager";
 import Subscription from "../components/dashboard/Subscription";
 import Profile from "../components/dashboard/Profile";
-import { API } from "../utils/api";
 import FileStatsPage from "../components/dashboard/FileStatsPage";
 import QRStatsPage from "../components/dashboard/QRStatsPage";
 import LinkStats from "../components/dashboard/LinkStats";
-import UserManager from "../components/dashboard/UserManager";
-import AdminLinksManager from "../components/dashboard/AdminLinksManager";
-import AdminQrManager from "../components/dashboard/AdminQrManager";
-import AdminFileManager from "../components/dashboard/AdminFileManager";
-import AdminTransactionManager from "../components/dashboard/AdminTransactionManager";
-import AdminPlanManager from "../components/dashboard/AdminPlanManager";
-import SecurityManager from "../components/dashboard/SecurityManager";
-import MailManager from "../components/dashboard/MailManager";
-import logoImage from "../assets/bliic.png";
-import logo2Image from "../assets/Bliic 2.png";
 import ApiDocumentation from "../components/dashboard/ApiDocumentation";
 import CustomDomainsManager from "../components/dashboard/CustomDomainsManager";
+import logoImage from "../assets/bliic.png";
+import logo2Image from "../assets/Bliic 2.png";
 
 interface User {
   id: string;
   email: string;
   name: string;
-  plan:
-    | "free"
-    | "premium"
-    | "premium_quarterly"
-    | "premium_annual"
-    | "enterprise";
-  role: "user" | "admin" | "super_admin";
-  access:
-    | string
-    | string[]
-    | {
-        permissions?: string[];
-        trial_started_at?: string;
-        trial_ends_at?: string;
-        trial_status?: "none" | "active" | "expired";
-      }
-    | null
-    | undefined;
+  plan: "free" | "premium" | "premium_quarterly" | "premium_annual" | "enterprise";
+  access: {
+    trial_started_at?: string;
+    trial_ends_at?: string;
+    trial_status?: "none" | "active" | "expired";
+  } | null | undefined;
   token: string;
+  renew_plan: number;
 }
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, logout, refreshUser } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
-
-  // Rafraîchir les données utilisateur à chaque changement de page
-  // useEffect(() => {
-  //   if (user?.token) {
-  //     refreshUser();
-  //   }
-  // }, [location.pathname, refreshUser, user?.token]); // Dépendance à location.pathname pour détecter les changements de page
 
   // Navigation pour les utilisateurs normaux
   const userNavigation = [
@@ -93,12 +60,12 @@ const Dashboard = () => {
     { name: "Fichiers", href: "/dashboard/files", icon: FileBox },
     { name: "Abonnements", href: "/dashboard/subscription", icon: CreditCard },
     { name: "Profil", href: "/dashboard/profile", icon: User },
-    { name: "API Documentation", href: "/dashboard/api-docs", icon: BookOpen },
+    { name: "Documentation API", href: "/dashboard/api-docs", icon: BookOpen },
     ...(user?.plan === "premium" ||
     user?.plan === "premium_quarterly" ||
     user?.plan === "premium_annual" ||
     user?.plan === "enterprise" ||
-    (user?.access as { trial_status?: string })?.trial_status === "active"
+    (user?.access && typeof user.access === "object" && "trial_status" in user.access && user.access.trial_status === "active")
       ? [
           {
             name: "Domaines Personnalisés",
@@ -109,143 +76,12 @@ const Dashboard = () => {
       : []),
   ];
 
-  // Options de navigation admin avec correspondance aux permissions
-  const adminNavigationOptions = [
-    {
-      name: "Tableau de bord Admin",
-      href: "/dashboard",
-      icon: BarChart2,
-      permission: null,
-    },
-    {
-      name: "Utilisateurs",
-      href: "/dashboard/users",
-      icon: Users,
-      permission: "users",
-    },
-    {
-      name: "Liens",
-      href: "/dashboard/admin-links",
-      icon: LinkIcon,
-      permission: "links",
-    },
-    {
-      name: "QR Codes",
-      href: "/dashboard/admin-qr",
-      icon: QrCode,
-      permission: "qr",
-    },
-    {
-      name: "Fichiers",
-      href: "/dashboard/admin-files",
-      icon: FileBox,
-      permission: "files",
-    },
-    {
-      name: "Transactions",
-      href: "/dashboard/transactions",
-      icon: CreditCard,
-      permission: "payments",
-    },
-    {
-      name: "Plans",
-      href: "/dashboard/plans",
-      icon: Package,
-      permission: "plans",
-    },
-    {
-      name: "Mails",
-      href: "/dashboard/mails",
-      icon: Mail,
-      permission: "mails",
-    },
-    {
-      name: "Sécurité",
-      href: "/dashboard/security",
-      icon: Shield,
-      permission: "security",
-    },
-    {
-      name: "API Documentation",
-      href: "/dashboard/api-docs",
-      icon: BookOpen,
-      permission: null,
-    },
-  ];
-
-  // Options de routes admin avec correspondance aux permissions
-  const adminRoutesOptions = [
-    { path: "users", element: <UserManager />, permission: "users" },
-    {
-      path: "admin-links",
-      element: <AdminLinksManager />,
-      permission: "links",
-    },
-    { path: "admin-qr", element: <AdminQrManager />, permission: "qr" },
-    { path: "admin-files", element: <AdminFileManager />, permission: "files" },
-    {
-      path: "transactions",
-      element: <AdminTransactionManager />,
-      permission: "payments",
-    },
-    { path: "plans", element: <AdminPlanManager />, permission: "plans" },
-    { path: "mails", element: <MailManager />, permission: "mails" },
-    { path: "security", element: <SecurityManager />, permission: "security" },
-  ];
-
-  // Fonction pour vérifier si l'utilisateur a la permission
-  const hasPermission = (permission: string | null): boolean => {
-    if (!permission) return true;
-    if (!user || !user.access) return false;
-    if (user.role === "super_admin") return true;
-    if (user.role === "admin") {
-      let permissions: string[] = [];
-      if (typeof user.access === "string") {
-        try {
-          const parsedAccess = JSON.parse(user.access);
-          if (Array.isArray(parsedAccess)) {
-            permissions = parsedAccess;
-          } else if (parsedAccess && typeof parsedAccess === "object") {
-            permissions = (parsedAccess as any).permissions || [];
-          }
-        } catch (e) {
-          console.error("Erreur lors du parsing de access:", e);
-          permissions = [];
-        }
-      } else if (typeof user.access === "object" && user.access !== null) {
-        permissions = (user.access as any).permissions || [];
-      } else if (Array.isArray(user.access)) {
-        permissions = user.access;
-      }
-      return permissions.includes(permission);
-    }
-    return false;
-  };
-
-  // Filtrer la navigation admin en fonction des permissions
-  const adminNavigation = adminNavigationOptions.filter((item) =>
-    hasPermission(item.permission)
-  );
-
-  // Filtrer les routes admin en fonction des permissions
-  const accessibleAdminRoutes = adminRoutesOptions.filter((route) =>
-    hasPermission(route.permission)
-  );
-
-  // Déterminer la navigation en fonction du rôle
-  const navigation =
-    user?.role === "super_admin" || user?.role === "admin"
-      ? adminNavigation
-      : userNavigation;
-
   // Déterminer l'affichage du plan
   const displayPlan = (): string => {
     if (!user) return "N/A";
-    if (user.role === "super_admin") return "Super Admin";
-    if (user.role === "admin") return "Admin";
     if (
       user.plan === "free" &&
-      (user.access as { trial_status?: string })?.trial_status === "active"
+      user.access && typeof user.access === "object" && "trial_status" in user.access && user.access.trial_status === "active"
     ) {
       return "Premium (Essai)";
     }
@@ -253,22 +89,27 @@ const Dashboard = () => {
       ["premium", "premium_quarterly", "premium_annual", "enterprise"].includes(
         user.plan
       )
-      ? "Premium"
-      : user.plan
-      ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1)
-      : "N/A";
+      ? user.plan === "premium"
+        ? "Premium Mensuel"
+        : user.plan === "premium_quarterly"
+        ? "Premium Trimestriel"
+        : user.plan === "premium_annual"
+        ? "Premium Annuel"
+        : "Enterprise"
+      : "Découverte";
   };
 
   // Logs de débogage
   console.log("User:", {
-    role: user?.role,
-    access: user?.access,
     plan: user?.plan,
-    trial_status: (user?.access as { trial_status?: string })?.trial_status,
+    trial_status:
+      user?.access && typeof user.access === "object" && "trial_status" in user.access
+        ? user.access.trial_status
+        : undefined,
   });
   console.log(
     "Navigation:",
-    navigation.map((item) => ({
+    userNavigation.map((item) => ({
       name: item.name,
       href: item.href,
     }))
@@ -277,7 +118,30 @@ const Dashboard = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen" data-theme={theme}>
+    <div className="min-h-screen font-sans" data-theme={theme}>
+      <style>
+        {`
+          .sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 256px;
+            height: 100%;
+            z-index: 40;
+            transition: left 0.3s ease-in-out;
+            ${theme === "dark" ? "background-color: #1f2937;" : "background-color: #ffffff;"}
+          }
+          .sidebar.open {
+            left: 0;
+          }
+          @media (min-width: 768px) {
+            .sidebar {
+              left: 0;
+            }
+          }
+        `}
+      </style>
+
       {/* Mobile menu button */}
       <button
         className={`fixed top-4 left-4 z-50 md:hidden ${
@@ -310,7 +174,7 @@ const Dashboard = () => {
 
           {/* Navigation */}
           <nav className="flex-1 p-4 pt-6 space-y-4">
-            {navigation.map((item) => {
+            {userNavigation.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
@@ -416,7 +280,7 @@ const Dashboard = () => {
                   theme === "dark"
                     ? "text-dark-text-primary hover:bg-dark-card/60"
                     : "text-light-text-primary hover:bg-light-card/60"
-                }`}
+                  }`}
                 title={
                   theme === "dark"
                     ? "Passer au thème clair"
@@ -439,16 +303,7 @@ const Dashboard = () => {
       <main className="md:ml-64 min-h-screen">
         <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
           <Routes>
-            <Route
-              index
-              element={
-                ["admin", "super_admin"].includes(user?.role ?? "") ? (
-                  <AdminHome />
-                ) : (
-                  <DashboardHome />
-                )
-              }
-            />
+            <Route index element={<DashboardHome />} />
             <Route path="links" element={<LinksManager />} />
             <Route path="qr" element={<QRGenerator />} />
             <Route path="files" element={<FileManager />} />
@@ -461,14 +316,6 @@ const Dashboard = () => {
             />
             <Route path="links/:linkId/stats" element={<LinkStats />} />
             <Route path="api-docs" element={<ApiDocumentation />} />
-            {["admin", "super_admin"].includes(user?.role ?? "") &&
-              accessibleAdminRoutes.map((route) => (
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={route.element}
-                />
-              ))}
             <Route
               path="custom-domains"
               element={
@@ -476,8 +323,7 @@ const Dashboard = () => {
                 user?.plan === "premium_quarterly" ||
                 user?.plan === "premium_annual" ||
                 user?.plan === "enterprise" ||
-                (user?.access as { trial_status?: string })?.trial_status ===
-                  "active" ? (
+                (user?.access && typeof user.access === "object" && "trial_status" in user.access && user.access.trial_status === "active") ? (
                   <CustomDomainsManager />
                 ) : (
                   <div
@@ -487,8 +333,7 @@ const Dashboard = () => {
                         : "text-light-text-primary"
                     }`}
                   >
-                    Cette fonctionnalité est réservée aux plans Premium et
-                    Enterprise.
+                    Cette fonctionnalité est réservée aux plans Premium et Enterprise.
                   </div>
                 )
               }
@@ -503,11 +348,10 @@ const Dashboard = () => {
                       : "text-light-text-primary"
                   }`}
                 >
-                  Accès non autorisé ou page introuvable.
+                  Page introuvable.
                 </div>
               }
             />
-            
           </Routes>
         </div>
       </main>
