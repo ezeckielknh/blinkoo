@@ -511,7 +511,7 @@ const totalDownloads = fileLinks?.reduce((sum, b) => sum + (b.download_count ?? 
                 theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"
               }`}
             >
-              Plan Actuel : {user.plan && ["free","premium", "premium_quarterly", "premium_annual", "enterprise"].includes(user.plan) ? "Premium" : "N/A"}
+              Plan Actuel : {user.plan && ["premium", "premium_quarterly", "premium_annual", "enterprise"].includes(user.plan) ? "Premium" : "Découverte"}
             </h3>
             <p
               className={`text-base mb-4 ${
