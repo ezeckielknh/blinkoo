@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
@@ -6,12 +7,12 @@ import { API } from "../../utils/api";
 import * as dateFns from "date-fns";
 import { fr } from "date-fns/locale";
 import { motion } from "framer-motion";
-
-// Import or define UserWithToken type
+import { useTheme } from "../../contexts/ThemeContext";
 
 const Profile = () => {
   const { user, setUser } = useAuth();
   const { addToast } = useToast();
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
   const [renewPlanLoading, setRenewPlanLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -148,25 +149,27 @@ const Profile = () => {
   return (
     <div className="space-y-6 font-sans">
       <div className="flex items-center justify-between pt-9">
-        <h1 className="text-2xl font-bold">Paramètres du Profil</h1>
+        <h1 className={`text-2xl font-bold ${theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"}`}>
+          Paramètres du Profil
+        </h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Informations personnelles */}
         <div className="lg:col-span-2">
-          <div className="card p-6 rounded-2xl shadow-xl bg-dark-card/90 dark:bg-dark-card/90 border-dark-text-secondary/50 dark:border-dark-text-secondary/50">
-            <h2 className="text-lg font-semibold mb-4 text-dark-text-primary dark:text-dark-text-primary">
+          <div className={`card p-6 rounded-2xl shadow-xl ${theme === "dark" ? "bg-dark-card/90 border-dark-text-secondary/50" : "bg-gray-100 border-gray-300"}`}>
+            <h2 className={`text-lg font-semibold mb-4 ${theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"}`}>
               Informations Personnelles
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="form-control">
-                <label htmlFor="name" className="form-label text-dark-text-secondary dark:text-dark-text-secondary">
+                <label htmlFor="name" className={`form-label ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Nom Complet
                 </label>
                 <input
                   id="name"
                   type="text"
-                  className="form-input w-full p-3 rounded-lg border bg-dark-card dark:bg-dark-card text-dark-text-primary dark:text-dark-text-primary border-dark-text-secondary/50 dark:border-dark-text-secondary/50 focus:ring focus:ring-dark-secondary/20 dark:focus:ring-dark-secondary/20"
+                  className={`form-input w-full p-3 rounded-lg border ${theme === "dark" ? "bg-dark-card text-dark-text-primary border-dark-text-secondary/50 focus:ring-dark-secondary/20" : "bg-white text-light-text-primary border-gray-300 focus:ring-light-secondary/20"}`}
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
@@ -175,13 +178,13 @@ const Profile = () => {
               </div>
 
               <div className="form-control">
-                <label htmlFor="email" className="form-label text-dark-text-secondary dark:text-dark-text-secondary">
+                <label htmlFor="email" className={`form-label ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Adresse Email
                 </label>
                 <input
                   id="email"
                   type="email"
-                  className="form-input w-full p-3 rounded-lg border bg-dark-card dark:bg-dark-card text-dark-text-primary dark:text-dark-text-primary border-dark-text-secondary/50 dark:border-dark-text-secondary/50 focus:ring focus:ring-dark-secondary/20 dark:focus:ring-dark-secondary/20"
+                  className={`form-input w-full p-3 rounded-lg border ${theme === "dark" ? "bg-dark-card text-dark-text-primary border-dark-text-secondary/50 focus:ring-dark-secondary/20" : "bg-white text-light-text-primary border-gray-300 focus:ring-light-secondary/20"}`}
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
@@ -191,9 +194,7 @@ const Profile = () => {
 
               <motion.button
                 type="submit"
-                className={`btn btn-primary w-full py-3 rounded-lg font-semibold text-base flex items-center justify-center bg-dark-primary hover:bg-dark-primary/80 dark:bg-dark-primary dark:hover:bg-dark-primary/80 text-dark-text-primary dark:text-dark-text-primary ${
-                  loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`btn btn-primary w-full py-3 rounded-lg font-semibold text-base flex items-center justify-center ${theme === "dark" ? "bg-dark-primary hover:bg-dark-primary/80 text-dark-text-primary" : "bg-light-primary hover:bg-light-primary/80 text-dark-text-primary"} ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                 disabled={loading}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -216,26 +217,26 @@ const Profile = () => {
 
         {/* Résumé du compte */}
         <div className="lg:col-span-1">
-          <div className="card p-6 rounded-2xl shadow-xl bg-dark-card/90 dark:bg-dark-card/90 border-dark-text-secondary/50 dark:border-dark-text-secondary/50">
-            <h2 className="text-lg font-semibold mb-4 dark:text-dark-text-primary">
+          <div className={`card p-6 rounded-2xl shadow-xl ${theme === "dark" ? "bg-dark-card/90 border-dark-text-secondary/50" : "bg-gray-100 border-gray-300"}`}>
+            <h2 className={`text-lg font-semibold mb-4 ${theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"}`}>
               Résumé du Compte
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="text-sm  dark:text-dark-text-secondary">
+                <label className={`text-sm ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Membre Depuis
                 </label>
-                <p className="font-medium text-dark-text-primary dark:text-dark-text-primary">
+                <p className={`font-medium ${theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"}`}>
                   {dateFns.format(
                     new Date(user?.created_at ?? ""),
                     "d MMMM yyyy",
                     { locale: fr }
                   )}
                 </p>
-                <label className="text-sm text-dark-text-secondary dark:text-dark-text-secondary">
+                <label className={`text-sm ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Plan Actuel
                 </label>
-                <p className="font-medium text-dark-text-primary dark:text-dark-text-primary">
+                <p className={`font-medium ${theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"}`}>
                   {user?.plan === "free"
                     ? "Bliic Découverte"
                     : user?.plan === "premium"
@@ -248,11 +249,11 @@ const Profile = () => {
                 </p>
               </div>
               <div>
-                <label className="text-sm text-dark-text-secondary dark:text-dark-text-secondary">
+                <label className={`text-sm ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Utilisation
                 </label>
                 <div className="mt-1">
-                  <div className="flex justify-between text-sm mb-1 text-dark-text-secondary dark:text-dark-text-secondary">
+                  <div className={`flex justify-between text-sm mb-1 ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                     <span>Liens</span>
                     {user?.plan === "premium" || user?.plan === "premium_quarterly" || user?.plan === "premium_annual" || user?.plan === "enterprise" ? (
                       <span>Illimité</span>
@@ -263,12 +264,12 @@ const Profile = () => {
                   <div className="h-4 bg-gray-700 rounded-full overflow-hidden">
                     {user?.plan === "premium" || user?.plan === "premium_quarterly" || user?.plan === "premium_annual" || user?.plan === "enterprise" ? (
                       <div
-                        className="h-full bg-dark-primary dark:bg-dark-primary transition-all duration-300"
+                        className={`h-full ${theme === "dark" ? "bg-dark-primary" : "bg-light-primary"} transition-all duration-300`}
                         style={{ width: "100%" }}
                       />
                     ) : (
                       <div
-                        className="h-full bg-dark-primary dark:bg-dark-primary transition-all duration-300"
+                        className={`h-full ${theme === "dark" ? "bg-dark-primary" : "bg-light-primary"} transition-all duration-300`}
                         style={{
                           width: `${((user?.short_links?.length || 0) / 15) * 100}%`,
                         }}
@@ -276,28 +277,32 @@ const Profile = () => {
                     )}
                   </div>
                   {(user?.plan === "premium" || user?.plan === "premium_quarterly" || user?.plan === "premium_annual" || user?.plan === "enterprise") && (
-                    <p className="text-xs text-dark-text-secondary dark:text-dark-text-secondary mt-1 text-center">
+                    <p className={`text-xs ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"} mt-1 text-center`}>
                       Illimité
                     </p>
                   )}
                 </div>
               </div>
               <div>
-                <label className="text-sm text-dark-text-secondary dark:text-dark-text-secondary">
+                <label className={`text-sm ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Notifications de Renouvellement
                 </label>
                 <motion.button
                   onClick={handleToggleRenewPlan}
                   className={`w-full py-3 rounded-lg font-semibold text-base flex items-center justify-center ${
-                    user?.renew_plan === true
-                      ? "bg-dark-danger hover:bg-dark-danger/80 dark:bg-dark-danger dark:hover:bg-dark-danger/80 text-dark-text-primary dark:text-dark-text-primary"
-                      : "bg-dark-primary hover:bg-dark-primary/80 dark:bg-dark-primary dark:hover:bg-dark-primary/80 text-dark-text-primary dark:text-dark-text-primary"
+                    user?.renew_plan
+                      ? theme === "dark"
+                        ? "bg-dark-danger hover:bg-dark-danger/80 text-dark-text-primary"
+                        : "bg-light-danger hover:bg-light-danger/80 text-dark-text-primary"
+                      : theme === "dark"
+                      ? "bg-dark-primary hover:bg-dark-primary/80 text-dark-text-primary"
+                      : "bg-light-primary hover:bg-light-primary/80 text-dark-text-primary"
                   } ${renewPlanLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                   disabled={renewPlanLoading}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label={
-                    user?.renew_plan === true
+                    user?.renew_plan
                       ? "Désactiver les notifications de renouvellement"
                       : "Activer les notifications de renouvellement"
                   }
@@ -307,7 +312,7 @@ const Profile = () => {
                       <span className="inline-block h-4 w-4 rounded-full border-2 border-white/20 border-t-white animate-spin mr-2" />
                       Traitement...
                     </>
-                  ) : user?.renew_plan === true ? (
+                  ) : user?.renew_plan ? (
                     <>
                       <BellOff size={16} className="mr-2" />
                       Désactiver les Notifications
@@ -326,20 +331,20 @@ const Profile = () => {
 
         {/* Changer le mot de passe */}
         <div className="lg:col-span-2">
-          <div className="card p-6 rounded-2xl shadow-xl bg-dark-card/90 dark:bg-dark-card/90 border-dark-text-secondary/50 dark:border-dark-text-secondary/50">
-            <h2 className="text-lg font-semibold mb-4 text-dark-text-primary dark:text-dark-text-primary">
+          <div className={`card p-6 rounded-2xl shadow-xl ${theme === "dark" ? "bg-dark-card/90 border-dark-text-secondary/50" : "bg-gray-100 border-gray-300"}`}>
+            <h2 className={`text-lg font-semibold mb-4 ${theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"}`}>
               Changer le Mot de Passe
             </h2>
             <form className="space-y-4">
               <div className="form-control">
-                <label htmlFor="currentPassword" className="form-label text-dark-text-secondary dark:text-dark-text-secondary">
+                <label htmlFor="currentPassword" className={`form-label ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Mot de Passe Actuel
                 </label>
                 <div className="relative">
                   <input
                     id="currentPassword"
                     type={showPassword ? "text" : "password"}
-                    className="form-input w-full p-3 rounded-lg border bg-dark-card dark:bg-dark-card text-dark-text-primary dark:text-dark-text-primary border-dark-text-secondary/50 dark:border-dark-text-secondary/50 focus:ring focus:ring-dark-secondary/20 dark:focus:ring-dark-secondary/20 pr-10"
+                    className={`form-input w-full p-3 rounded-lg border ${theme === "dark" ? "bg-dark-card text-dark-text-primary border-dark-text-secondary/50 focus:ring-dark-secondary/20" : "bg-white text-light-text-primary border-gray-300 focus:ring-light-secondary/20"} pr-10`}
                     value={formData.currentPassword}
                     onChange={(e) =>
                       setFormData({
@@ -350,7 +355,7 @@ const Profile = () => {
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-dark-text-secondary dark:text-dark-text-secondary hover:text-dark-text-primary dark:hover:text-dark-text-primary"
+                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${theme === "dark" ? "text-dark-text-secondary hover:text-dark-text-primary" : "text-light-text-secondary hover:text-light-text-primary"}`}
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -359,14 +364,14 @@ const Profile = () => {
               </div>
 
               <div className="form-control">
-                <label htmlFor="newPassword" className="form-label text-dark-text-secondary dark:text-dark-text-secondary">
+                <label htmlFor="newPassword" className={`form-label ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Nouveau Mot de Passe
                 </label>
                 <div className="relative">
                   <input
                     id="newPassword"
                     type={showNewPassword ? "text" : "password"}
-                    className="form-input w-full p-3 rounded-lg border bg-dark-card dark:bg-dark-card text-dark-text-primary dark:text-dark-text-primary border-dark-text-secondary/50 dark:border-dark-text-secondary/50 focus:ring focus:ring-dark-secondary/20 dark:focus:ring-dark-secondary/20 pr-10"
+                    className={`form-input w-full p-3 rounded-lg border ${theme === "dark" ? "bg-dark-card text-dark-text-primary border-dark-text-secondary/50 focus:ring-dark-secondary/20" : "bg-white text-light-text-primary border-gray-300 focus:ring-light-secondary/20"} pr-10`}
                     value={formData.newPassword}
                     onChange={(e) =>
                       setFormData({ ...formData, newPassword: e.target.value })
@@ -374,7 +379,7 @@ const Profile = () => {
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-dark-text-secondary dark:text-dark-text-secondary hover:text-dark-text-primary dark:hover:text-dark-text-primary"
+                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${theme === "dark" ? "text-dark-text-secondary hover:text-dark-text-primary" : "text-light-text-secondary hover:text-light-text-primary"}`}
                     onClick={() => setShowNewPassword(!showNewPassword)}
                   >
                     {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -383,14 +388,14 @@ const Profile = () => {
               </div>
 
               <div className="form-control">
-                <label htmlFor="confirmPassword" className="form-label text-dark-text-secondary dark:text-dark-text-secondary">
+                <label htmlFor="confirmPassword" className={`form-label ${theme === "dark" ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Confirmer le Nouveau Mot de Passe
                 </label>
                 <div className="relative">
                   <input
                     id="confirmPassword"
                     type={showNewPassword ? "text" : "password"}
-                    className="form-input w-full p-3 rounded-lg border bg-dark-card dark:bg-dark-card text-dark-text-primary dark:text-dark-text-primary border-dark-text-secondary/50 dark:border-dark-text-secondary/50 focus:ring focus:ring-dark-secondary/20 dark:focus:ring-dark-secondary/20 pr-10"
+                    className={`form-input w-full p-3 rounded-lg border ${theme === "dark" ? "bg-dark-card text-dark-text-primary border-dark-text-secondary/50 focus:ring-dark-secondary/20" : "bg-white text-light-text-primary border-gray-300 focus:ring-light-secondary/20"} pr-10`}
                     value={formData.confirmPassword}
                     onChange={(e) =>
                       setFormData({
@@ -401,7 +406,7 @@ const Profile = () => {
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-dark-text-secondary dark:text-dark-text-secondary hover:text-dark-text-primary dark:hover:text-dark-text-primary"
+                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${theme === "dark" ? "text-dark-text-secondary hover:text-dark-text-primary" : "text-light-text-secondary hover:text-light-text-primary"}`}
                     onClick={() => setShowNewPassword(!showNewPassword)}
                   >
                     {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -411,9 +416,7 @@ const Profile = () => {
 
               <motion.button
                 type="submit"
-                className={`btn btn-primary w-full py-3 rounded-lg font-semibold text-base flex items-center justify-center bg-dark-primary hover:bg-dark-primary/80 dark:bg-dark-primary dark:hover:bg-dark-primary/80 text-dark-text-primary dark:text-dark-text-primary ${
-                  loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`btn btn-primary w-full py-3 rounded-lg font-semibold text-base flex items-center justify-center ${theme === "dark" ? "bg-dark-primary hover:bg-dark-primary/80 text-dark-text-primary" : "bg-light-primary hover:bg-light-primary/80 text-dark-text-primary"} ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                 onClick={handlePasswordChange}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
