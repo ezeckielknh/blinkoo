@@ -291,7 +291,7 @@ const Subscription = () => {
         "QR codes personnalisés",
         "Partage de fichiers jusqu'à 1 GB",
         "Stockage total de 10 GB",
-        "2 domaines personnalisés",
+        "Domaine personnalisé",
         "Accès bêta + badge",
       ],
       disabled: user?.plan === "premium_annual",

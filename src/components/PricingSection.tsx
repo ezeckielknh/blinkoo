@@ -19,7 +19,7 @@ const PricingSection = () => {
       period: "/ pour toujours",
       icon: Gift,
       features: [
-        "10 liens/mois",
+        "15 liens/mois",
         "Analytique de base",
         "QR codes standards",
         "Partage de fichiers jusqu'à 100 MB",
@@ -77,7 +77,7 @@ const PricingSection = () => {
         "Analytique avancée",
         "QR codes personnalisés",
         "Partage de fichiers jusqu'à 1 GB",
-        "2 domaines personnalisés",
+        "Domaine personnalisé",
         "Accès bêta + badge",
       ],
       cta: "Choisir ce plan",
