@@ -62,13 +62,13 @@ const DashboardHome = () => {
     ? user.plan === "premium"
       ? "Premium"
       : user.plan === "premium_quarterly"
-      ? "Premium Quarterly"
+      ? "Premium trimestriel"
       : user.plan === "premium_annual"
-      ? "Premium Annual"
+      ? "Premium annuel"
       : user.plan === "enterprise"
       ? "Enterprise"
       : "Free"
-    : "Free";
+    : "Gratuit";
 
   const formatDate = (dateString: string | number | Date) => {
     if (!dateString) return "N/A";
@@ -511,7 +511,7 @@ const totalDownloads = fileLinks?.reduce((sum, b) => sum + (b.download_count ?? 
                 theme === "dark" ? "text-dark-text-primary" : "text-light-text-primary"
               }`}
             >
-              Plan Actuel : {user.plan && ["premium", "premium_quarterly", "premium_annual", "enterprise"].includes(user.plan) ? "Premium" : "N/A"}
+              Plan Actuel : {user.plan && ["free","premium", "premium_quarterly", "premium_annual", "enterprise"].includes(user.plan) ? "Premium" : "N/A"}
             </h3>
             <p
               className={`text-base mb-4 ${
