@@ -217,12 +217,12 @@ const Profile = () => {
         {/* Résumé du compte */}
         <div className="lg:col-span-1">
           <div className="card p-6 rounded-2xl shadow-xl bg-dark-card/90 dark:bg-dark-card/90 border-dark-text-secondary/50 dark:border-dark-text-secondary/50">
-            <h2 className="text-lg font-semibold mb-4 text-dark-text-primary dark:text-dark-text-primary">
+            <h2 className="text-lg font-semibold mb-4 dark:text-dark-text-primary">
               Résumé du Compte
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-dark-text-secondary dark:text-dark-text-secondary">
+                <label className="text-sm  dark:text-dark-text-secondary">
                   Membre Depuis
                 </label>
                 <p className="font-medium text-dark-text-primary dark:text-dark-text-primary">
