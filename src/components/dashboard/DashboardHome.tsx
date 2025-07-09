@@ -67,8 +67,8 @@ const DashboardHome = () => {
       ? "Premium annuel"
       : user.plan === "enterprise"
       ? "Enterprise"
-      : "Free"
-    : "Gratuit";
+      : "Decouverte"
+    : "Decouverte";
 
   const formatDate = (dateString: string | number | Date) => {
     if (!dateString) return "N/A";
