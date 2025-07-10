@@ -5,7 +5,8 @@ import { API } from "../../utils/api";
 import ReactQuill, { Value } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { X, Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
-import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Post {
   id: number;
@@ -14,7 +15,7 @@ interface Post {
   content: Value;
   published: boolean;
   created_at: string;
-  user: { id: number; name: string };
+  user?: { id: number; name: string }; // Make user optional
   images: { id: number; image_url: string }[];
   comments: {
     id: number;
@@ -35,7 +36,8 @@ const AdminPostsManager: React.FC = () => {
   const [formData, setFormData] = useState({
     title: "",
     content: "" as Value,
-    images: ["", "", ""] as string[],
+    images: [null, null, null] as (File | null)[],
+    deleteImages: [] as number[],
   });
 
   // Fetch posts based on user role
@@ -52,20 +54,25 @@ const AdminPostsManager: React.FC = () => {
       } catch (err) {
         console.error("Error fetching posts:", err);
         setError("Impossible de charger les articles. Veuillez réessayer.");
+        toast.error("Erreur lors du chargement des articles.", {
+          position: "top-right",
+          autoClose: 3000,
+          theme: theme === "dark" ? "dark" : "light",
+        });
         setLoading(false);
       }
     };
     fetchPosts();
-  }, [user?.role]);
+  }, [user?.role, theme]);
 
   // Handle form input changes
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index?: number
   ) => {
-    if (index !== undefined) {
+    if (index !== undefined && e.target.files) {
       const newImages = [...formData.images];
-      newImages[index] = e.target.value;
+      newImages[index] = e.target.files[0] || null;
       setFormData({ ...formData, images: newImages });
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -77,13 +84,25 @@ const AdminPostsManager: React.FC = () => {
     setFormData({ ...formData, content });
   };
 
+  // Handle deleting an existing image
+  const handleDeleteImage = (imageId: number, index: number) => {
+    const newImages = [...formData.images];
+    newImages[index] = null;
+    setFormData({
+      ...formData,
+      images: newImages,
+      deleteImages: [...formData.deleteImages, imageId],
+    });
+  };
+
   // Open modal for creating/editing post
   const openModal = (post: Post | null = null) => {
     setEditingPost(post);
     setFormData({
       title: post?.title || "",
       content: post?.content || "",
-      images: post?.images.map((img) => img.image_url) || ["", "", ""],
+      images: post ? post.images.map(() => null).concat([null, null, null]).slice(0, 3) : [null, null, null],
+      deleteImages: [],
     });
     setIsModalOpen(true);
   };
@@ -92,7 +111,7 @@ const AdminPostsManager: React.FC = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setEditingPost(null);
-    setFormData({ title: "", content: "", images: ["", "", ""] });
+    setFormData({ title: "", content: "", images: [null, null, null], deleteImages: [] });
   };
 
   // Submit post (create or update)
@@ -100,28 +119,50 @@ const AdminPostsManager: React.FC = () => {
     e.preventDefault();
     if (user?.role !== "admin" && user?.role !== "super_admin") return;
     const api = user?.role === "super_admin" ? API.SUPER_ADMIN : API.ADMIN;
-    const data = {
-      title: formData.title,
-      content: JSON.stringify(formData.content),
-      images: formData.images.filter((url) => url.trim() !== ""),
-    };
+    const form = new FormData();
+    form.append("title", formData.title);
+    form.append("content", JSON.stringify(formData.content));
+    formData.images.forEach((image, index) => {
+      if (image) {
+        form.append(`images[${index}]`, image);
+      }
+    });
+    if (editingPost && formData.deleteImages.length > 0) {
+      form.append("delete_images", JSON.stringify(formData.deleteImages));
+    }
 
     try {
       if (editingPost) {
-        const response = await api.UPDATE_POST(editingPost.id.toString(), data);
+        const response = await api.UPDATE_POST(editingPost.id.toString(), form);
         setPosts(
           posts.map((post) =>
             post.id === editingPost.id ? (response.data as { post: Post }).post : post
           )
         );
+        toast.success("Article mis à jour avec succès.", {
+          position: "top-right",
+          autoClose: 3000,
+          theme: theme === "dark" ? "dark" : "light",
+        });
       } else {
-        const response = await api.CREATE_POST(data);
+        const response = await api.CREATE_POST(form);
         setPosts([...posts, (response.data as { post: Post }).post]);
+        toast.success("Article créé avec succès.", {
+          position: "top-right",
+          autoClose: 3000,
+          theme: theme === "dark" ? "dark" : "light",
+        });
       }
       closeModal();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error saving post:", err);
-      setError("Erreur lors de l'enregistrement de l'article.");
+      const errorMessage = err.response?.data?.message || "Erreur lors de l'enregistrement de l'article.";
+      setError(errorMessage);
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 3000,
+        theme: theme === "dark" ? "dark" : "light",
+      });
     }
   };
 
@@ -133,9 +174,19 @@ const AdminPostsManager: React.FC = () => {
     try {
       await api.DELETE_POST(postId.toString());
       setPosts(posts.filter((post) => post.id !== postId));
+      toast.success("Article supprimé avec succès.", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: theme === "dark" ? "dark" : "light",
+      });
     } catch (err) {
       console.error("Error deleting post:", err);
       setError("Erreur lors de la suppression de l'article.");
+      toast.error("Erreur lors de la suppression de l'article.", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: theme === "dark" ? "dark" : "light",
+      });
     }
   };
 
@@ -144,11 +195,22 @@ const AdminPostsManager: React.FC = () => {
     if (user?.role !== "admin" && user?.role !== "super_admin") return;
     const api = user?.role === "super_admin" ? API.SUPER_ADMIN : API.ADMIN;
     try {
-      const response = await api.TOGGLE_PUBLISH_POST(post.id.toString());
+      const response = await api.TOGGLE_PUBLISH_POST(post.slug.toString());
       setPosts(posts.map((p) => (p.id === post.id ? (response.data as { post: Post }).post : p)));
-    } catch (err) {
+      toast.success(`Article ${post.published ? "dépublié" : "publié"} avec succès.`, {
+        position: "top-right",
+        autoClose: 3000,
+        theme: theme === "dark" ? "dark" : "light",
+      });
+    } catch (err: any) {
       console.error("Error toggling publish status:", err);
-      setError("Erreur lors du changement de statut de publication.");
+      const errorMessage = err.response?.data?.message || "Erreur lors du changement de statut de publication.";
+      setError(errorMessage);
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 3000,
+        theme: theme === "dark" ? "dark" : "light",
+      });
     }
   };
 
@@ -184,6 +246,7 @@ const AdminPostsManager: React.FC = () => {
         theme === "dark" ? "bg-dark-background" : "bg-light-background"
       }`}
     >
+      <ToastContainer />
       <div className="flex justify-between items-center mb-6">
         <h1
           className={`text-2xl font-bold ${
@@ -212,7 +275,7 @@ const AdminPostsManager: React.FC = () => {
           className={`mb-4 p-4 rounded-lg ${
             theme === "dark"
               ? "bg-dark-danger/20 text-dark-danger"
-              : "bg-light-danger/20 text-light-danger"
+              : "bg-light-danger/20 text-dark-danger"
           }`}
         >
           {error}
@@ -260,7 +323,7 @@ const AdminPostsManager: React.FC = () => {
                   }`}
                 >
                   <td className="p-4">{post.title}</td>
-                  <td className="p-4">{post.user.name}</td>
+                  <td className="p-4">{post.user?.name ?? "Inconnu"}</td>
                   <td className="p-4">
                     {post.published ? "Publié" : "Brouillon"}
                   </td>
@@ -395,21 +458,67 @@ const AdminPostsManager: React.FC = () => {
                       : "text-light-text-secondary"
                   }`}
                 >
-                  Images (jusqu'à 3 URLs)
+                  Images (jusqu'à 3 fichiers)
                 </label>
+                {editingPost && editingPost.images.length > 0 && (
+                  <div className="mb-4">
+                    <label
+                      className={`block mb-2 ${
+                        theme === "dark"
+                          ? "text-dark-text-secondary"
+                          : "text-light-text-secondary"
+                      }`}
+                    >
+                      Images existantes
+                    </label>
+                    {editingPost.images.map((image, index) => (
+                      !formData.deleteImages.includes(image.id) && (
+                        <div key={image.id} className="flex items-center mb-2">
+                          <img
+                            src={image.image_url}
+                            alt={`Image ${index + 1}`}
+                            className="w-24 h-24 object-cover mr-2 rounded"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteImage(image.id, index)}
+                            className={`p-2 rounded-lg ${
+                              theme === "dark"
+                                ? "text-dark-danger hover:bg-dark-card"
+                                : "text-light-danger hover:bg-light-card"
+                            }`}
+                          >
+                            <Trash2 size={20} />
+                          </button>
+                        </div>
+                      )
+                    ))}
+                  </div>
+                )}
                 {formData.images.map((image, index) => (
-                  <input
-                    key={index}
-                    type="url"
-                    value={image}
-                    onChange={(e) => handleInputChange(e, index)}
-                    placeholder={`URL de l'image ${index + 1}`}
-                    className={`w-full p-2 mb-2 rounded-lg ${
-                      theme === "dark"
-                        ? "bg-dark-background text-dark-text-primary border-gray-800"
-                        : "bg-light-background text-light-text-primary border-gray-200"
-                    } border font-sans`}
-                  />
+                  <div key={index} className="flex items-center mb-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleInputChange(e, index)}
+                      className={`w-full p-2 rounded-lg ${
+                        theme === "dark"
+                          ? "bg-dark-background text-dark-text-primary border-gray-800"
+                          : "bg-light-background text-light-text-primary border-gray-200"
+                      } border font-sans`}
+                    />
+                    {image && (
+                      <span
+                        className={`ml-2 text-sm truncate max-w-xs ${
+                          theme === "dark"
+                            ? "text-dark-text-secondary"
+                            : "text-light-text-secondary"
+                        }`}
+                      >
+                        {image.name}
+                      </span>
+                    )}
+                  </div>
                 ))}
               </div>
               <div className="flex justify-end space-x-2">

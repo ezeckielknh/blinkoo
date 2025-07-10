@@ -177,16 +177,19 @@ export const API = {
       axios.get(`${BASE_URL}/admin/posts/${post}`, {
         headers: { Authorization: `Bearer ${getAuthToken()}` },
       }),
-    CREATE_POST: (data: { title: string; content: any; images?: string[] }) =>
+    CREATE_POST: (data: FormData) =>
       axios.post(`${BASE_URL}/admin/posts`, data, {
-        headers: { Authorization: `Bearer ${getAuthToken()}` },
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+          "Content-Type": "multipart/form-data",
+        },
       }),
-    UPDATE_POST: (
-      post: string,
-      data: { title: string; content: any; images?: string[] }
-    ) =>
-      axios.put(`${BASE_URL}/admin/posts/${post}`, data, {
-        headers: { Authorization: `Bearer ${getAuthToken()}` },
+    UPDATE_POST: (post: string, data: FormData) =>
+      axios.post(`${BASE_URL}/admin/posts/${post}?_method=PUT`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+          "Content-Type": "multipart/form-data",
+        },
       }),
     DELETE_POST: (post: string) =>
       axios.delete(`${BASE_URL}/admin/posts/${post}`, {
@@ -368,16 +371,19 @@ export const API = {
       axios.get(`${BASE_URL}/super-admin/posts/${post}`, {
         headers: { Authorization: `Bearer ${getAuthToken()}` },
       }),
-    CREATE_POST: (data: { title: string; content: any; images?: string[] }) =>
+    CREATE_POST: (data: FormData) =>
       axios.post(`${BASE_URL}/super-admin/posts`, data, {
-        headers: { Authorization: `Bearer ${getAuthToken()}` },
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+          "Content-Type": "multipart/form-data",
+        },
       }),
-    UPDATE_POST: (
-      post: string,
-      data: { title: string; content: any; images?: string[] }
-    ) =>
-      axios.put(`${BASE_URL}/super-admin/posts/${post}`, data, {
-        headers: { Authorization: `Bearer ${getAuthToken()}` },
+    UPDATE_POST: (post: string, data: FormData) =>
+      axios.post(`${BASE_URL}/super-admin/posts/${post}?_method=PUT`, data, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+          "Content-Type": "multipart/form-data",
+        },
       }),
     DELETE_POST: (post: string) =>
       axios.delete(`${BASE_URL}/super-admin/posts/${post}`, {
@@ -421,15 +427,15 @@ export const API = {
       ),
   },
   POSTS: {
-    GET_ALL: (params: any = {}) => axios.get(`${BASE_URL}/posts`, { params }), // Public endpoint for all posts
-    GET_ONE: (post: string) => axios.get(`${BASE_URL}/posts/${post}`), // Public endpoint for single post
-    CREATE_COMMENT: (post: string, data: { comment: string }) =>
-      axios.post(`${BASE_URL}/posts/${post}/comments`, data, {
+    GET_ALL: (params: any = {}) => axios.get(`${BASE_URL}/posts`, { params }),
+    GET_ONE: (slug: string) => axios.get(`${BASE_URL}/posts/${slug}`), // Updated to expect slug
+    CREATE_COMMENT: (slug: string, data: { comment: string }) =>
+      axios.post(`${BASE_URL}/posts/${slug}/comments`, data, {
         headers: { Authorization: `Bearer ${getAuthToken()}` },
       }),
-    TOGGLE_LIKE: (post: string) =>
+    TOGGLE_LIKE: (slug: string) =>
       axios.post(
-        `${BASE_URL}/posts/${post}/like`,
+        `${BASE_URL}/posts/${slug}/like`,
         {},
         { headers: { Authorization: `Bearer ${getAuthToken()}` } }
       ),

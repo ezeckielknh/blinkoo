@@ -8,10 +8,10 @@ interface Post {
   id: number;
   title: string;
   slug: string;
-  content: Value; // Use Value from react-quill to handle both string and object
+  content: Value;
   published: boolean;
   created_at: string;
-  user: { id: number; name: string };
+  user?: { id: number; name: string }; // Make user optional
   images: { id: number; image_url: string }[];
   comments: { id: number; comment: string; user: { id: number; name: string } }[];
   likes: { id: number; user_id: number }[];
@@ -28,10 +28,12 @@ const PostsSection: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const response = await API.POSTS.GET_ALL({ limit: 3, sort: 'created_at,desc' });
-        // Parse content if it's a JSON string
+        // Parse content if it's a JSON string, otherwise assume it's a Delta object or plain text
         const parsedPosts = (response.data as Post[]).map(post => ({
           ...post,
-          content: typeof post.content === 'string' ? JSON.parse(post.content) : post.content,
+          content: typeof post.content === 'string' && isValidJson(post.content)
+            ? JSON.parse(post.content)
+            : post.content,
         }));
         setPosts(parsedPosts);
         setLoading(false);
@@ -44,16 +46,34 @@ const PostsSection: React.FC = () => {
     fetchPosts();
   }, []);
 
-  // Extract plain text from Quill Delta JSON for preview
+  // Check if content is valid JSON
+  const isValidJson = (str: string): boolean => {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // Extract plain text from Quill Delta JSON or plain HTML for preview
   const getPostExcerpt = (content: Value, maxLength: number = 100): string => {
     try {
       let text = '';
       if (typeof content === 'string') {
-        // If content is still a string (in case parsing failed elsewhere)
-        text = JSON.parse(content).ops?.map((op: { insert: string }) => op.insert).join('').trim() || '';
+        // Try parsing as JSON first
+        if (isValidJson(content)) {
+          const parsed = JSON.parse(content);
+          text = parsed.ops?.map((op: { insert: string }) => op.insert).join('').trim() || '';
+        } else {
+          // If not JSON, assume it's plain HTML and extract text
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(content, 'text/html');
+          text = doc.body.textContent?.trim() || '';
+        }
       } else {
         // Content is already a Delta object
-        (op: { insert?: string }) => op.insert
+        text = content?.ops?.map((op: { insert?: string }) => op.insert).join('').trim() || '';
       }
       return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     } catch (err) {
@@ -104,12 +124,18 @@ const PostsSection: React.FC = () => {
                   theme === 'dark' ? 'bg-dark-card/90' : 'bg-light-card'
                 } rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl animate-slide-up`}
               >
-                {post.images.length > 0 && (
+                {post.images.length > 0 ? (
                   <img
-                    src={post.images[0].image_url}
+                    src={API.DEVBASEURL + post.images[0].image_url}
                     alt={post.title}
                     className="w-full h-48 object-cover"
                     onError={(e) => (e.currentTarget.src = '/placeholder-image.jpg')}
+                  />
+                ) : (
+                  <img
+                    src="/placeholder-image.jpg"
+                    alt="Placeholder"
+                    className="w-full h-48 object-cover"
                   />
                 )}
                 <div className="p-6">
@@ -127,7 +153,7 @@ const PostsSection: React.FC = () => {
                     <span className={`text-sm ${
                       theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
                     }`}>
-                      Par {post.user.name} • {new Date(post.created_at).toLocaleDateString('fr-FR')}
+                      Par {post.user?.name ?? 'Inconnu'} • {new Date(post.created_at).toLocaleDateString('fr-FR')}
                     </span>
                     <span className={`text-sm ${
                       theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
@@ -137,7 +163,7 @@ const PostsSection: React.FC = () => {
                     </span>
                   </div>
                   <Link
-                    to={`/posts/${post.id}`}
+                    to={`/posts/${post.slug}`}
                     className={`inline-block px-6 py-2 rounded-lg font-medium transition-colors duration-200 ${
                       theme === 'dark'
                         ? 'bg-dark-primary text-dark-text-primary hover:bg-dark-tertiary'

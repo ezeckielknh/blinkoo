@@ -18,6 +18,7 @@ const FooterSection = () => {
     company: [
       { name: "À propos de nous", to: "/about" },
       { name: "Contact", to: "/contact" },
+      { name: "Blog", to: "/posts" },
     ],
     legal: [
       { name: "Politique de confidentialité", to: "/privacy" },

@@ -96,12 +96,7 @@ const adminNavigationOptions = [
     icon: Shield,
     permission: "security",
   },
-  {
-    name: "API Documentation",
-    href: "/admin/api-docs",
-    icon: BookOpen,
-    permission: null,
-  },
+  
 ];
 
 const adminRoutesOptions = [
@@ -349,7 +344,7 @@ const AdminDashboard = () => {
                 element={route.element}
               />
             ))}
-            <Route path="api-docs" element={<ApiDocumentation />} />
+            
             <Route
               path="*"
               element={

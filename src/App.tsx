@@ -33,6 +33,8 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import 'react-quill/dist/quill.snow.css';
 import './styles/quill-custom.css';
+import PostPage from "./pages/PostPage";
+import PostsPage from "./pages/PostsPage";
 
 function App() {
   return (
@@ -99,6 +101,23 @@ function App() {
                   </PageLayout>
                 }
               />
+              <Route
+                path="/posts"
+                element={
+                  <PageLayout>
+                    <PostsPage />
+                  </PageLayout>
+                }
+              />
+              <Route
+                path="/posts/:slug"
+                element={
+                  <PageLayout>
+                    <PostPage />
+                  </PageLayout>
+                }
+              />
+
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/verify" element={<Verify />} />
