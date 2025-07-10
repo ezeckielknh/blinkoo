@@ -31,6 +31,8 @@ import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import 'react-quill/dist/quill.snow.css';
+import './styles/quill-custom.css';
 
 function App() {
   return (

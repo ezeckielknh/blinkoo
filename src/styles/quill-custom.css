@@ -1,0 +1,38 @@
+.ql-container {
+  font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* Styles pour le mode sombre */
+[data-theme='dark'] .ql-container {
+  background-color: #0d1117; /* bg-dark-background */
+  color: #e5e7eb; /* text-dark-text-primary */
+}
+
+[data-theme='dark'] .ql-editor {
+  color: #e5e7eb;
+}
+
+[data-theme='dark'] .ql-toolbar.ql-snow {
+  background-color: #1f2937; /* bg-dark-card */
+  border-color: #374151; /* border-gray-800 */
+}
+
+/* Styles pour le mode clair */
+[data-theme='light'] .ql-container {
+  background-color: #ffffff; /* bg-light-background */
+  color: #1f2937; /* text-light-text-primary */
+}
+
+[data-theme='light'] .ql-editor {
+  color: #1f2937;
+}
+
+[data-theme='light'] .ql-toolbar.ql-snow {
+  background-color: #f3f4f6; /* bg-light-card */
+  border-color: #e5e7eb; /* border-gray-200 */
+}
+
+.ql-toolbar.ql-snow .ql-picker-label,
+.ql-toolbar.ql-snow .ql-picker-item {
+  color: inherit;
+}

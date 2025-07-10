@@ -17,6 +17,7 @@ import {
   Moon,
   ChevronRight,
   LogOut,
+  BookA,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
@@ -32,6 +33,7 @@ import MailManager from "../components/dashboard/MailManager";
 import ApiDocumentation from "../components/dashboard/ApiDocumentation";
 import logoImage from "../assets/bliic.png";
 import logo2Image from "../assets/Bliic 2.png";
+import AdminPostsManager from "../components/dashboard/AdminPostsManager";
 
 const adminNavigationOptions = [
   {
@@ -83,6 +85,12 @@ const adminNavigationOptions = [
     permission: "mails",
   },
   {
+    name: "Posts",
+    href: "/admin/posts",
+    icon: BookA,
+    permission: "posts",
+  },
+  {
     name: "Sécurité",
     href: "/admin/security",
     icon: Shield,
@@ -108,6 +116,7 @@ const adminRoutesOptions = [
   },
   { path: "plans", element: <AdminPlanManager />, permission: "plans" },
   { path: "mails", element: <MailManager />, permission: "mails" },
+  { path: "posts", element: <AdminPostsManager />, permission: "posts" },
   { path: "security", element: <SecurityManager />, permission: "security" },
 ];
 

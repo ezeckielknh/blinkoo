@@ -169,6 +169,35 @@ export const API = {
         {},
         { headers: { Authorization: `Bearer ${getAuthToken()}` } }
       ),
+    GET_POSTS: () =>
+      axios.get(`${BASE_URL}/admin/posts`, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    GET_POST: (post: string) =>
+      axios.get(`${BASE_URL}/admin/posts/${post}`, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    CREATE_POST: (data: { title: string; content: any; images?: string[] }) =>
+      axios.post(`${BASE_URL}/admin/posts`, data, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    UPDATE_POST: (
+      post: string,
+      data: { title: string; content: any; images?: string[] }
+    ) =>
+      axios.put(`${BASE_URL}/admin/posts/${post}`, data, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    DELETE_POST: (post: string) =>
+      axios.delete(`${BASE_URL}/admin/posts/${post}`, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    TOGGLE_PUBLISH_POST: (post: string) =>
+      axios.patch(
+        `${BASE_URL}/admin/posts/${post}/publish`,
+        {},
+        { headers: { Authorization: `Bearer ${getAuthToken()}` } }
+      ),
   },
   SUPER_ADMIN: {
     GET_STATS: `${BASE_URL}/super-admin/getStats`,
@@ -330,6 +359,36 @@ export const API = {
     STORE_ADMIN: `${BASE_URL}/super-admin/admins`,
     DELETE_ADMIN: `${BASE_URL}/super-admin/admins`,
     UPDATE_ADMIN: `${BASE_URL}/super-admin/admins`,
+
+    GET_POSTS: () =>
+      axios.get(`${BASE_URL}/super-admin/posts`, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    GET_POST: (post: string) =>
+      axios.get(`${BASE_URL}/super-admin/posts/${post}`, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    CREATE_POST: (data: { title: string; content: any; images?: string[] }) =>
+      axios.post(`${BASE_URL}/super-admin/posts`, data, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    UPDATE_POST: (
+      post: string,
+      data: { title: string; content: any; images?: string[] }
+    ) =>
+      axios.put(`${BASE_URL}/super-admin/posts/${post}`, data, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    DELETE_POST: (post: string) =>
+      axios.delete(`${BASE_URL}/super-admin/posts/${post}`, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    TOGGLE_PUBLISH_POST: (post: string) =>
+      axios.patch(
+        `${BASE_URL}/super-admin/posts/${post}/publish`,
+        {},
+        { headers: { Authorization: `Bearer ${getAuthToken()}` } }
+      ),
   },
 
   PASSWORD: {
@@ -357,6 +416,20 @@ export const API = {
     VERIFY: (id: string) =>
       axios.post(
         `${BASE_URL}/custom-domains/${id}/verify`,
+        {},
+        { headers: { Authorization: `Bearer ${getAuthToken()}` } }
+      ),
+  },
+  POSTS: {
+    GET_ALL: (params: any = {}) => axios.get(`${BASE_URL}/posts`, { params }), // Public endpoint for all posts
+    GET_ONE: (post: string) => axios.get(`${BASE_URL}/posts/${post}`), // Public endpoint for single post
+    CREATE_COMMENT: (post: string, data: { comment: string }) =>
+      axios.post(`${BASE_URL}/posts/${post}/comments`, data, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }),
+    TOGGLE_LIKE: (post: string) =>
+      axios.post(
+        `${BASE_URL}/posts/${post}/like`,
         {},
         { headers: { Authorization: `Bearer ${getAuthToken()}` } }
       ),

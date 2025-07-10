@@ -6,6 +6,7 @@ import FAQSection from "../components/FAQSection";
 import CTASection from "../components/CTASection";
 import WhyChooseUsSection from "../components/WhyChooseUsSection";
 import ComparisonSection from "../components/ComparisonSection";
+import PostsSection from "../components/PostsSection";
 
 const LandingPage = () => {
   return (
@@ -30,6 +31,9 @@ const LandingPage = () => {
 
       {/* FAQ */}
       <FAQSection />
+
+      {/* Latest Posts */}
+      <PostsSection />
 
       {/* CTA */}
       <CTASection />
