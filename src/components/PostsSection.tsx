@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {API} from '../utils/api'; // Import API configuration
+import { API } from '../utils/api';
 import { useTheme } from '../contexts/ThemeContext';
+import { Value } from 'react-quill';
 
-// Define Post type (same as before, for reference)
 interface Post {
   id: number;
   title: string;
   slug: string;
-  content: { ops: { insert: string }[] };
+  content: Value; // Use Value from react-quill to handle both string and object
   published: boolean;
   created_at: string;
   user: { id: number; name: string };
@@ -28,10 +28,16 @@ const PostsSection: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const response = await API.POSTS.GET_ALL({ limit: 3, sort: 'created_at,desc' });
-        setPosts(response.data as Post[]);
+        // Parse content if it's a JSON string
+        const parsedPosts = (response.data as Post[]).map(post => ({
+          ...post,
+          content: typeof post.content === 'string' ? JSON.parse(post.content) : post.content,
+        }));
+        setPosts(parsedPosts);
         setLoading(false);
       } catch (err) {
-        setError('Failed to load posts');
+        console.error("Error fetching posts:", err);
+        setError('Impossible de charger les articles.');
         setLoading(false);
       }
     };
@@ -39,9 +45,21 @@ const PostsSection: React.FC = () => {
   }, []);
 
   // Extract plain text from Quill Delta JSON for preview
-  const getPostExcerpt = (content: { ops: { insert: string }[] }, maxLength: number = 100): string => {
-    const text = content.ops.map(op => op.insert).join('').trim();
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  const getPostExcerpt = (content: Value, maxLength: number = 100): string => {
+    try {
+      let text = '';
+      if (typeof content === 'string') {
+        // If content is still a string (in case parsing failed elsewhere)
+        text = JSON.parse(content).ops?.map((op: { insert: string }) => op.insert).join('').trim() || '';
+      } else {
+        // Content is already a Delta object
+        (op: { insert?: string }) => op.insert
+      }
+      return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    } catch (err) {
+      console.error("Error parsing content:", err);
+      return 'Contenu non disponible';
+    }
   };
 
   return (
@@ -50,13 +68,13 @@ const PostsSection: React.FC = () => {
         <h2 className={`text-3xl font-bold text-center mb-12 ${
           theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
         }`}>
-          Latest Blog Posts
+          Derniers articles
         </h2>
 
         {loading && (
           <div className="text-center">
             <p className={`${theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-              Loading posts...
+              Chargement des articles...
             </p>
           </div>
         )}
@@ -72,7 +90,7 @@ const PostsSection: React.FC = () => {
         {!loading && !error && posts.length === 0 && (
           <div className="text-center">
             <p className={`${theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-              No posts available.
+              Aucun article disponible.
             </p>
           </div>
         )}
@@ -86,16 +104,14 @@ const PostsSection: React.FC = () => {
                   theme === 'dark' ? 'bg-dark-card/90' : 'bg-light-card'
                 } rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl animate-slide-up`}
               >
-                {/* Post Image (show first image if available) */}
                 {post.images.length > 0 && (
                   <img
                     src={post.images[0].image_url}
                     alt={post.title}
                     className="w-full h-48 object-cover"
-                    onError={(e) => (e.currentTarget.src = '/placeholder-image.jpg')} // Fallback image
+                    onError={(e) => (e.currentTarget.src = '/placeholder-image.jpg')}
                   />
                 )}
-
                 <div className="p-6">
                   <h3 className={`text-xl font-semibold mb-2 ${
                     theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
@@ -111,24 +127,24 @@ const PostsSection: React.FC = () => {
                     <span className={`text-sm ${
                       theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
                     }`}>
-                      By {post.user.name} • {new Date(post.created_at).toLocaleDateString()}
+                      Par {post.user.name} • {new Date(post.created_at).toLocaleDateString('fr-FR')}
                     </span>
                     <span className={`text-sm ${
                       theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
                     }`}>
-                      {post.comments.length} {post.comments.length === 1 ? 'Comment' : 'Comments'} •{' '}
+                      {post.comments.length} {post.comments.length === 1 ? 'Commentaire' : 'Commentaires'} •{' '}
                       {post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}
                     </span>
                   </div>
                   <Link
-                    to={`/posts/${post.slug}`}
+                    to={`/posts/${post.id}`}
                     className={`inline-block px-6 py-2 rounded-lg font-medium transition-colors duration-200 ${
                       theme === 'dark'
                         ? 'bg-dark-primary text-dark-text-primary hover:bg-dark-tertiary'
                         : 'bg-light-primary text-light-text-primary hover:bg-light-tertiary'
                     }`}
                   >
-                    Read More
+                    Lire la suite
                   </Link>
                 </div>
               </div>
